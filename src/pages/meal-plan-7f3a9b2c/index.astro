@@ -462,34 +462,49 @@ const i18n = {
           </h2>
           <div class="meal-grid">
             {meals.map((m, i) => (
-              <article class="meal-card" data-day={m.day.en}>
-                <div class="meal-head">
-                  <div class="meal-day">
-                    <span class="day-num">{String(i + 1).padStart(2, '0')}</span>
-                    <span class="day-name">
-                      <span lang="en">{m.day.en}</span>
-                      <span lang="hi">{m.day.hi}</span>
+              <details class="meal-card" data-day={m.day.en}>
+                <summary>
+                  <div class="meal-head">
+                    <div class="meal-day">
+                      <span class="day-num">{String(i + 1).padStart(2, '0')}</span>
+                      <span class="day-name">
+                        <span lang="en">{m.day.en}</span>
+                        <span lang="hi">{m.day.hi}</span>
+                      </span>
+                    </div>
+                    <span class="cuisine-badge" style={`--c: ${cuisineColor[m.cuisine]}`}>
+                      <span lang="en">{cuisineName[m.cuisine].en}</span>
+                      <span lang="hi">{cuisineName[m.cuisine].hi}</span>
                     </span>
                   </div>
-                  <span class="cuisine-badge" style={`--c: ${cuisineColor[m.cuisine]}`}>
-                    <span lang="en">{cuisineName[m.cuisine].en}</span>
-                    <span lang="hi">{cuisineName[m.cuisine].hi}</span>
+                  <h3>
+                    <span lang="en">{m.name.en}</span>
+                    <span lang="hi">{m.name.hi}</span>
+                  </h3>
+                  <div class="macros">
+                    <span>{m.cal} <span lang="en">{i18n.unitKcal.en}</span><span lang="hi">{i18n.unitKcal.hi}</span></span>
+                    <span class="dot">·</span>
+                    <span>{m.protein}<span lang="en">{i18n.unitProtein.en}</span><span lang="hi"> {i18n.unitProtein.hi}</span></span>
+                    <span class="dot">·</span>
+                    <span>
+                      <span lang="en">{m.time.en}</span>
+                      <span lang="hi">{m.time.hi}</span>
+                    </span>
+                  </div>
+                  <span class="expand-hint" aria-hidden="true">
+                    <span class="hint-closed">
+                      <span lang="en">Tap for recipe</span>
+                      <span lang="hi">रेसिपी देखें</span>
+                    </span>
+                    <span class="hint-open">
+                      <span lang="en">Hide recipe</span>
+                      <span lang="hi">रेसिपी छुपाएँ</span>
+                    </span>
+                    <svg class="chevron" width="12" height="12" viewBox="0 0 12 12" fill="none">
+                      <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
                   </span>
-                </div>
-                <h3>
-                  <span lang="en">{m.name.en}</span>
-                  <span lang="hi">{m.name.hi}</span>
-                </h3>
-                <div class="macros">
-                  <span>{m.cal} <span lang="en">{i18n.unitKcal.en}</span><span lang="hi">{i18n.unitKcal.hi}</span></span>
-                  <span class="dot">·</span>
-                  <span>{m.protein}<span lang="en">{i18n.unitProtein.en}</span><span lang="hi"> {i18n.unitProtein.hi}</span></span>
-                  <span class="dot">·</span>
-                  <span>
-                    <span lang="en">{m.time.en}</span>
-                    <span lang="hi">{m.time.hi}</span>
-                  </span>
-                </div>
+                </summary>
                 <div class="meal-body">
                   <h4>
                     <span lang="en">{i18n.fieldIngredients.en}</span>
@@ -512,7 +527,7 @@ const i18n = {
                     <span lang="hi">{m.note.hi}</span>
                   </div>
                 </div>
-              </article>
+              </details>
             ))}
           </div>
         </div>
@@ -670,12 +685,43 @@ const i18n = {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    padding: 1.4rem;
-    display: flex;
-    flex-direction: column;
     transition: border-color 0.18s, transform 0.18s, box-shadow 0.18s;
   }
   .meal-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+
+  .meal-card > summary {
+    list-style: none;
+    cursor: pointer;
+    padding: 1.4rem;
+    border-radius: var(--radius);
+    -webkit-tap-highlight-color: transparent;
+  }
+  .meal-card > summary::-webkit-details-marker { display: none; }
+  .meal-card > summary::marker { display: none; }
+  .meal-card > summary:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .expand-hint {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 0.85rem;
+    color: var(--accent);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    user-select: none;
+  }
+  .expand-hint .chevron {
+    transition: transform 0.2s ease;
+  }
+  .meal-card[open] .expand-hint .chevron { transform: rotate(180deg); }
+  .meal-card .hint-open { display: none; }
+  .meal-card[open] .hint-closed { display: none; }
+  .meal-card[open] .hint-open { display: inline; }
 
   .meal-card.is-today {
     border-color: var(--accent);
@@ -695,6 +741,7 @@ const i18n = {
     border-radius: 999px;
     letter-spacing: 0.08em;
     text-transform: uppercase;
+    z-index: 1;
   }
 
   .meal-head {
@@ -737,14 +784,18 @@ const i18n = {
   }
   .macros .dot { opacity: 0.5; }
 
+  .meal-body {
+    padding: 0 1.4rem 1.4rem;
+  }
   .meal-body h4 {
     font-size: 0.78rem;
     text-transform: uppercase;
     letter-spacing: 0.1em;
     color: var(--accent);
-    margin: 0.9rem 0 0.45rem;
+    margin: 0.4rem 0 0.45rem;
     font-weight: 600;
   }
+  .meal-body h4:first-child { margin-top: 0; }
   .meal-body ul {
     margin: 0 0 0 1.1rem;
     color: var(--muted);
@@ -840,8 +891,9 @@ const i18n = {
   }
 
   @media print {
-    .lang-toggle { display: none; }
+    .lang-toggle, .expand-hint { display: none !important; }
     .page-hero { background: none; padding: 1rem 0; }
+    details.meal-card > .meal-body { display: block !important; }
     .meal-card, .shop-card, .tips li {
       break-inside: avoid;
       background: white !important;
@@ -888,8 +940,28 @@ const i18n = {
     }
 
     // 2. Highlight today's card (matches by English day name from data-day)
+    //    Auto-expand it so the cook lands on tonight's recipe.
     var today = new Date().toLocaleDateString('en-US', { weekday: 'long' });
     var card = root.querySelector('.meal-card[data-day="' + today + '"]');
-    if (card) card.classList.add('is-today');
+    if (card) {
+      card.classList.add('is-today');
+      card.setAttribute('open', '');
+    }
+
+    // 3. Print: expand every card so the full plan prints, then restore.
+    window.addEventListener('beforeprint', function () {
+      var cards = root.querySelectorAll('details.meal-card');
+      for (var i = 0; i < cards.length; i++) {
+        cards[i].dataset.printState = cards[i].open ? 'open' : 'closed';
+        cards[i].open = true;
+      }
+    });
+    window.addEventListener('afterprint', function () {
+      var cards = root.querySelectorAll('details.meal-card');
+      for (var i = 0; i < cards.length; i++) {
+        if (cards[i].dataset.printState === 'closed') cards[i].open = false;
+        delete cards[i].dataset.printState;
+      }
+    });
   })();
 </script>
