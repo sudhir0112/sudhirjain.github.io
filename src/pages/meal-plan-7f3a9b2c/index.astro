@@ -1,0 +1,485 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+const meals = [
+  {
+    day: 'Monday',
+    cuisine: 'Indian',
+    name: 'Palak Tofu with Jeera Brown Rice',
+    cal: 510,
+    protein: 30,
+    time: '30 min',
+    ingredients: [
+      '200g firm tofu, cubed (pressed 15 min)',
+      '200g spinach, blanched & puréed',
+      '1 onion + 1 tomato + ginger-garlic, finely chopped',
+      '½ cup brown rice (uncooked) with 1 tsp cumin',
+      'Spices: turmeric, garam masala, chili, salt',
+      '1 tsp oil; lemon to finish',
+      'Side: kachumber (cucumber, onion, tomato, lemon)',
+    ],
+    method: 'Sauté onion-tomato-ginger-garlic in 1 tsp oil. Add spices, then puréed spinach. Simmer 5 min, fold in tofu, cook 4 min. Serve over jeera brown rice with kachumber.',
+    note: 'Tofu (vs paneer) keeps protein high and calories low. Swap to 80g paneer if you want extra dairy that day.',
+  },
+  {
+    day: 'Tuesday',
+    cuisine: 'Mediterranean',
+    name: 'Greek Chickpea Bowl with Tahini-Lemon Dressing',
+    cal: 520,
+    protein: 24,
+    time: '20 min',
+    ingredients: [
+      '1 cup cooked chickpeas (warm)',
+      '½ cup cherry tomatoes, halved',
+      '½ cucumber, diced',
+      '¼ red onion, thin sliced',
+      '6–8 kalamata olives',
+      '20g feta (optional, skip to cut dairy)',
+      'Parsley, chopped',
+      'Dressing: 1 tbsp tahini + lemon juice + 1 small garlic + water + salt',
+    ],
+    method: 'Whisk dressing till pourable. Toss everything in a wide bowl, drizzle dressing, top with parsley.',
+    note: 'Cook a big batch of chickpeas at start of week — reuse for Friday lentil bowl variation.',
+  },
+  {
+    day: 'Wednesday',
+    cuisine: 'Mexican',
+    name: 'Black Bean & Quinoa Burrito Bowl',
+    cal: 550,
+    protein: 28,
+    time: '25 min',
+    ingredients: [
+      '¾ cup cooked quinoa',
+      '¾ cup black beans, warmed with cumin & garlic',
+      '½ bell pepper + ¼ onion, fajita-style sautéed',
+      '¼ cup corn salsa (corn, tomato, jalapeño, lime)',
+      '½ avocado, sliced',
+      '2 tbsp Greek yogurt (in place of sour cream)',
+      'Lime wedge, cilantro',
+    ],
+    method: 'Layer quinoa, then warm beans, then fajita veg. Top with corn salsa, avocado, yogurt dollop, cilantro, lime squeeze.',
+    note: 'Skipping the tortilla saves ~200 cal and keeps the protein-to-cal ratio strong.',
+  },
+  {
+    day: 'Thursday',
+    cuisine: 'Indian',
+    name: 'Rajma with Phulka & Kachumber',
+    cal: 510,
+    protein: 22,
+    time: '30 min (using soaked beans)',
+    ingredients: [
+      '¾ cup cooked rajma (kidney beans)',
+      '1 onion + 1 tomato + ginger-garlic',
+      'Spices: cumin seeds, turmeric, coriander, garam masala, chili',
+      '½ tsp oil (no butter finish)',
+      '2 thin whole-wheat phulkas (no oil/ghee)',
+      'Kachumber on the side',
+    ],
+    method: 'Pressure-cook soaked rajma. In ½ tsp oil, splutter cumin, sauté onion-ginger-garlic, add tomato + spices, cook to a thick masala. Add rajma + ½ cup of its cooking water, simmer 8 min. Serve with phulkas.',
+    note: 'Make 1.5x portion — repurpose leftovers as Saturday taco filling.',
+  },
+  {
+    day: 'Friday',
+    cuisine: 'Mediterranean',
+    name: 'Lentil & Roasted Vegetable Bowl with Yogurt Drizzle',
+    cal: 480,
+    protein: 28,
+    time: '35 min (mostly hands-off)',
+    ingredients: [
+      '¾ cup cooked brown/green lentils',
+      '1 small zucchini, half eggplant, ½ bell pepper — diced',
+      '1 tsp olive oil, salt, pepper, dried oregano',
+      'Lemon-herb dressing (lemon + olive oil + parsley + garlic)',
+      '2 tbsp Greek yogurt + chopped mint (drizzle)',
+    ],
+    method: 'Roast veg at 220°C / 425°F for 25 min. Toss with warm lentils + dressing in a wide bowl. Drizzle yogurt-mint over the top.',
+    note: 'One-tray oven dinner. Minimal active cooking.',
+  },
+  {
+    day: 'Saturday',
+    cuisine: 'Mexican',
+    name: 'Tofu & Bean Tacos (2 small corn tortillas)',
+    cal: 580,
+    protein: 30,
+    time: '25 min',
+    ingredients: [
+      '150g firm tofu, crumbled',
+      'Spice mix: chili, cumin, paprika, garlic, lime, salt',
+      '½ cup refried pinto beans (or Thu\'s leftover rajma)',
+      '2 small corn tortillas, warmed',
+      'Pickled red onion, fresh tomato salsa, ½ avocado, cilantro',
+    ],
+    method: 'Sauté crumbled tofu in 1 tsp oil with the spice mix till lightly browned (8 min). Warm beans and tortillas. Build tacos: beans → tofu → salsa → avocado → pickled onion → cilantro.',
+    note: 'Weekend treat — slightly higher carbs from tortillas. The tofu scramble mimics egg-style fillings.',
+  },
+  {
+    day: 'Sunday',
+    cuisine: 'Indian',
+    name: 'Moong Sprouts & Paneer Bhurji + Multigrain Roti',
+    cal: 550,
+    protein: 32,
+    time: '25 min',
+    ingredients: [
+      '¾ cup moong sprouts (soaked 24-36h, drained)',
+      '60g paneer, crumbled',
+      '1 onion + 1 tomato, finely chopped',
+      'Ginger, green chili, cumin, turmeric, garam masala',
+      '1 tsp oil; lemon + cilantro to finish',
+      '1 multigrain roti',
+      'Small cucumber raita (½ cup yogurt + cucumber + cumin)',
+    ],
+    method: 'Sauté onion-ginger-chili in oil. Add tomato + spices, cook to a thick masala. Add sprouts, splash of water, cover-cook 5 min. Fold in paneer crumble, cook 2 min. Finish with lemon + cilantro. Serve with roti and raita.',
+    note: 'The one dinner where dairy plays a real role. Sprouts boost protein well beyond a regular bhurji.',
+  },
+];
+
+const shopping = {
+  Produce: [
+    '4 onions, 6 tomatoes, 1 small red onion',
+    '1 bunch cilantro, 1 bunch parsley, fresh mint (small bunch)',
+    '2 cucumbers, 2 bell peppers, 1 zucchini, 1 small eggplant',
+    '200g spinach',
+    '2 limes, 2 lemons, 4 garlic cloves, small ginger',
+    '2 avocados, 2 green chilies',
+  ],
+  Pantry: [
+    'Chickpeas (1 can or ½ cup dry)',
+    'Black beans (1 can)',
+    'Pinto beans (1 can) — or skip and use rajma leftovers',
+    'Rajma / kidney beans (1 cup dry)',
+    'Whole moong beans (½ cup dry, for sprouting)',
+    'Brown/green lentils (½ cup dry)',
+    'Brown rice, quinoa',
+    'Whole-wheat flour, multigrain flour',
+    'Corn tortillas (small pack of 6)',
+    'Kalamata olives, tahini, olive oil',
+  ],
+  'Refrigerated / dairy': [
+    'Firm tofu — 1 block (~350g)',
+    'Greek yogurt — small tub',
+    'Paneer — 100g',
+    'Feta — 30g (optional, Tue)',
+  ],
+  Spices: [
+    'Cumin (whole + ground), coriander powder, turmeric',
+    'Garam masala, chili powder, paprika',
+    'Dried oregano, salt, pepper',
+    'Mustard seeds (optional)',
+  ],
+};
+
+const cuisineColor = {
+  Indian: '#f0a060',
+  Mediterranean: '#7cd3a8',
+  Mexican: '#e57373',
+};
+---
+
+<Layout
+  title="Weekly Dinner Plan — Sudhir Jain"
+  description="Private weekly dinner plan"
+  noindex={true}
+>
+  <header class="page-hero">
+    <div class="container">
+      <p class="eyebrow">Private · Week of {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
+      <h1>Weekly Dinner Plan</h1>
+      <p class="tagline">
+        Seven vegetarian dinners — Indian, Mediterranean, Mexican — designed for
+        weight maintenance and high protein. No eggs. Dairy used in moderation.
+      </p>
+      <div class="brief-tags">
+        <span class="tag-pill">~500 kcal / meal</span>
+        <span class="tag-pill">25–30g protein</span>
+        <span class="tag-pill">Vegetarian, no eggs</span>
+        <span class="tag-pill">Dairy: light</span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="meals-section">
+      <div class="container">
+        <h2><span>01</span> Dinners</h2>
+        <div class="meal-grid">
+          {meals.map((m, i) => (
+            <article class="meal-card">
+              <div class="meal-head">
+                <div class="meal-day">
+                  <span class="day-num">{String(i + 1).padStart(2, '0')}</span>
+                  <span class="day-name">{m.day}</span>
+                </div>
+                <span class="cuisine-badge" style={`--c: ${cuisineColor[m.cuisine]}`}>
+                  {m.cuisine}
+                </span>
+              </div>
+              <h3>{m.name}</h3>
+              <div class="macros">
+                <span>{m.cal} kcal</span>
+                <span class="dot">·</span>
+                <span>{m.protein}g protein</span>
+                <span class="dot">·</span>
+                <span>{m.time}</span>
+              </div>
+              <div class="meal-body">
+                <h4>Ingredients</h4>
+                <ul>
+                  {m.ingredients.map((ing) => <li>{ing}</li>)}
+                </ul>
+                <h4>Method</h4>
+                <p>{m.method}</p>
+                {m.note && (
+                  <div class="meal-note">{m.note}</div>
+                )}
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="shopping-section">
+      <div class="container">
+        <h2><span>02</span> Shopping list</h2>
+        <p class="lead">Quantities are for a single person, one week. Adjust up for partners or leftovers.</p>
+        <div class="shop-grid">
+          {Object.entries(shopping).map(([cat, items]) => (
+            <div class="shop-card">
+              <h3>{cat}</h3>
+              <ul>
+                {items.map((it) => <li>{it}</li>)}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="tips-section">
+      <div class="container">
+        <h2><span>03</span> Sunday prep (30 min, saves the week)</h2>
+        <ul class="tips">
+          <li><strong>Sprout the moong.</strong> Soak ½ cup overnight, drain, leave in a damp cloth or jar for 24–36h until tails appear.</li>
+          <li><strong>Cook the bases.</strong> Make 1 batch each of brown rice, quinoa, and lentils. Refrigerate in flat containers — they cool faster and reheat better.</li>
+          <li><strong>Pressure-cook the rajma</strong> on Wednesday night for Thursday's dinner.</li>
+          <li><strong>Press tofu in advance.</strong> Place between two plates with a weight for 15 min before cooking — it sears better and absorbs spice.</li>
+          <li><strong>Chop the onion-tomato base.</strong> A small jar of finely chopped onion + tomato covers Mon, Thu, and Sun's masalas.</li>
+        </ul>
+
+        <h2 class="sub-h2"><span>04</span> Swaps & tweaks</h2>
+        <ul class="tips">
+          <li><strong>Lower dairy week?</strong> Skip the feta on Tuesday, swap Wed's yogurt dollop for guacamole, halve the paneer on Sunday and bump tofu in Monday's dish to 250g.</li>
+          <li><strong>Higher protein push?</strong> Add 30g roasted chickpeas as a crunch topping to Mon, Wed, or Fri bowls (~+8g protein).</li>
+          <li><strong>Dining out one night?</strong> Drop Saturday's tacos — easiest meal to source vegetarian outside.</li>
+          <li><strong>Don't eat brown rice?</strong> Sub millet (jowar/bajra) or cauliflower rice in Monday's dish.</li>
+        </ul>
+      </div>
+    </section>
+
+    <footer class="page-footer">
+      <div class="container">
+        <p>
+          Private page · not indexed · accessible by direct link only.
+        </p>
+        <p class="footer-meta">
+          <a href="/">← back to sudhirjain.com</a>
+        </p>
+      </div>
+    </footer>
+  </main>
+</Layout>
+
+<style>
+  .page-hero {
+    padding: 4rem 0 2.5rem;
+    background: radial-gradient(900px 400px at 80% -10%, var(--accent-soft), transparent 70%);
+  }
+  .page-hero h1 {
+    font-size: clamp(2rem, 5vw, 3rem);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin: 0.4rem 0 0.9rem;
+  }
+  .page-hero .tagline {
+    color: var(--muted);
+    font-size: 1.05rem;
+    max-width: 42rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .brief-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .tag-pill {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-size: 0.78rem;
+    padding: 0.3rem 0.75rem;
+    border-radius: 999px;
+  }
+
+  .sub-h2 { margin-top: 2.5rem; }
+
+  .meals-section, .shopping-section, .tips-section { padding: 3rem 0; }
+
+  .meal-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.4rem;
+  }
+
+  .meal-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.4rem;
+    display: flex;
+    flex-direction: column;
+    transition: border-color 0.18s, transform 0.18s;
+  }
+  .meal-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+
+  .meal-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+  }
+  .meal-day { display: flex; align-items: baseline; gap: 0.6rem; }
+  .day-num {
+    color: var(--accent);
+    font-size: 0.85rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+  .day-name { color: var(--muted); font-size: 0.85rem; letter-spacing: 0.08em; text-transform: uppercase; }
+  .cuisine-badge {
+    color: var(--c);
+    border: 1px solid var(--c);
+    background: color-mix(in srgb, var(--c) 10%, transparent);
+    font-size: 0.72rem;
+    padding: 0.18rem 0.6rem;
+    border-radius: 999px;
+    letter-spacing: 0.04em;
+  }
+
+  .meal-card h3 {
+    font-size: 1.05rem;
+    margin: 0.3rem 0 0.4rem;
+    line-height: 1.3;
+  }
+  .macros {
+    color: var(--muted);
+    font-size: 0.82rem;
+    margin-bottom: 0.9rem;
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .macros .dot { opacity: 0.5; }
+
+  .meal-body h4 {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    margin: 0.9rem 0 0.45rem;
+    font-weight: 600;
+  }
+  .meal-body ul {
+    margin: 0 0 0 1.1rem;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+  .meal-body li { margin-bottom: 0.2rem; }
+  .meal-body p {
+    color: var(--muted);
+    font-size: 0.92rem;
+    line-height: 1.55;
+  }
+  .meal-note {
+    margin-top: 0.9rem;
+    padding: 0.7rem 0.85rem;
+    background: var(--bg-soft);
+    border-left: 3px solid var(--accent);
+    border-radius: 6px;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+
+  .shop-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.2rem;
+    margin-top: 1.2rem;
+  }
+  .shop-card {
+    background: var(--bg-soft);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.2rem 1.4rem;
+  }
+  .shop-card h3 {
+    font-size: 0.95rem;
+    margin-bottom: 0.6rem;
+    color: var(--accent);
+  }
+  .shop-card ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .shop-card li {
+    color: var(--muted);
+    font-size: 0.9rem;
+    padding: 0.25rem 0;
+    border-bottom: 1px dashed var(--border);
+  }
+  .shop-card li:last-child { border-bottom: none; }
+
+  .lead { color: var(--muted); margin-bottom: 0.5rem; }
+
+  .tips {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+  }
+  .tips li {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0.85rem 1.1rem;
+    color: var(--muted);
+    font-size: 0.93rem;
+    line-height: 1.55;
+  }
+  .tips li strong { color: var(--text); }
+
+  .page-footer {
+    padding: 3rem 0 2.5rem;
+    border-top: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 0.85rem;
+    text-align: center;
+  }
+  .footer-meta { margin-top: 0.6rem; }
+
+  @media print {
+    .page-hero { background: none; padding: 1rem 0; }
+    .meal-card, .shop-card, .tips li {
+      break-inside: avoid;
+      background: white !important;
+      color: black !important;
+      border-color: #ccc !important;
+    }
+  }
+
+  @media (max-width: 760px) {
+    .meal-grid { grid-template-columns: 1fr; }
+    .shop-grid { grid-template-columns: 1fr; }
+    .meal-head { flex-wrap: wrap; gap: 0.5rem; }
+  }
+</style>
