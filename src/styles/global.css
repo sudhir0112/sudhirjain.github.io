@@ -92,12 +92,20 @@ h3 { font-size: 1.12rem; margin-bottom: 0.3rem; }
 /* timeline */
 .timeline { display: flex; flex-direction: column; gap: 0.5rem; }
 .tl-item {
-  display: grid; grid-template-columns: 130px 1fr; gap: 1.5rem;
-  padding: 1.4rem 0; border-bottom: 1px solid var(--border);
+  display: grid; grid-template-columns: 150px 1fr; gap: 1.75rem;
+  padding: 1.6rem 0; border-bottom: 1px solid var(--border);
 }
 .tl-item:last-child { border-bottom: none; }
-.tl-period { color: var(--muted); font-size: 0.85rem; padding-top: 0.15rem; font-variant-numeric: tabular-nums; }
+.tl-left { display: flex; flex-direction: column; gap: 0.7rem; }
+.tl-period { color: var(--muted); font-size: 0.85rem; font-variant-numeric: tabular-nums; }
+.tl-logo {
+  background: #fff; border-radius: 10px; padding: 0.45rem 0.6rem;
+  width: 120px; height: 54px; display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 1px 0 var(--border);
+}
+.tl-logo img { max-width: 100%; max-height: 100%; object-fit: contain; }
 .tl-meta { color: var(--accent); font-size: 0.9rem; margin-bottom: 0.6rem; }
+.tl-body p { color: var(--muted); }
 .tl-body ul { margin: 0.4rem 0 0 1.1rem; color: var(--muted); }
 .tl-body li { margin-bottom: 0.35rem; }
 
@@ -121,10 +129,6 @@ h3 { font-size: 1.12rem; margin-bottom: 0.3rem; }
 .card-body p { color: var(--muted); font-size: 0.92rem; margin-bottom: 0.9rem; }
 .card .tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: auto; }
 
-.edu { padding: 1.2rem 0; border-bottom: 1px solid var(--border); }
-.edu:last-of-type { border-bottom: none; }
-.edu p { color: var(--muted); margin-top: 0.4rem; }
-
 .contact p { color: var(--muted); max-width: 40rem; margin-bottom: 1.5rem; }
 
 footer { padding: 2.5rem 0; text-align: center; color: var(--muted); font-size: 0.85rem; border-top: 1px solid var(--border); }
@@ -137,6 +141,7 @@ footer { padding: 2.5rem 0; text-align: center; color: var(--muted); font-size: 
   .hero .tagline, .prose p { margin-left: auto; margin-right: auto; }
   .socials { justify-content: center; }
   .grid { grid-template-columns: 1fr; }
-  .tl-item { grid-template-columns: 1fr; gap: 0.4rem; }
+  .tl-item { grid-template-columns: 1fr; gap: 0.8rem; }
+  .tl-left { flex-direction: row; align-items: center; gap: 1rem; }
   .links { gap: 0.9rem; }
 }

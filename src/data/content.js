@@ -39,6 +39,7 @@ export const experience = [
   {
     role: 'Product Manager — Google Cloud NetApp Volumes',
     company: 'Google',
+    logo: '/images/logos/google.svg',
     period: '2024 — Present',
     location: 'Bengaluru, India',
     points: [
@@ -49,6 +50,7 @@ export const experience = [
   {
     role: 'Senior Product Manager, Technical — Amazon FSx for Lustre',
     company: 'Amazon Web Services',
+    logo: '/images/logos/aws.svg',
     period: '2022 — 2024',
     location: 'Boston, MA',
     points: [
@@ -59,6 +61,7 @@ export const experience = [
   {
     role: 'Co-Founder & CTO',
     company: 'Guard-Ex',
+    logo: '/images/logos/guard-ex.png',
     period: '2017 — 2021',
     location: 'Waterloo, Canada',
     points: [
@@ -69,6 +72,7 @@ export const experience = [
   {
     role: 'Founder & Chief Product Officer',
     company: 'Smart Being',
+    logo: '/images/logos/smart-being.png',
     period: '2018 — 2019',
     location: 'Bhopal, India',
     points: [
@@ -79,6 +83,7 @@ export const experience = [
   {
     role: 'Technical Analyst',
     company: 'Axtria',
+    logo: '/images/logos/axtria.png',
     period: '2016 — 2017',
     location: 'Gurgaon, India',
     points: [
@@ -185,6 +190,7 @@ export const education = [
   {
     degree: 'M.S., Integrated Design & Management (Engineering + Management)',
     school: 'Massachusetts Institute of Technology',
+    logo: '/images/logos/mit.png',
     period: '2020 — 2022',
     detail:
       'School of Engineering & MIT Sloan. Thesis: "Multiclass 3D Segmentation of Progressive Damage in Advanced Composites using Deep Learning" (NECSTLAB). Also completed the MIT Deep Technology Bootcamp (2019).',
@@ -192,6 +198,7 @@ export const education = [
   {
     degree: 'B.Tech, Electronics & Communication Engineering',
     school: 'Maulana Azad National Institute of Technology (MANIT), Bhopal',
+    logo: '/images/logos/manit.png',
     period: '2012 — 2016',
     detail:
       'Built an automated computer-vision traffic-surveillance system as a capstone effort.',

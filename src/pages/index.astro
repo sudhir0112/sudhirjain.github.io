@@ -56,7 +56,10 @@ import {
       <div class="timeline">
         {experience.map((e) => (
           <div class="tl-item">
-            <div class="tl-period">{e.period}</div>
+            <div class="tl-left">
+              <div class="tl-period">{e.period}</div>
+              {e.logo && <div class="tl-logo"><img src={e.logo} alt={e.company} loading="lazy" /></div>}
+            </div>
             <div class="tl-body">
               <h3>{e.role}</h3>
               <div class="tl-meta">{e.company} · {e.location}</div>
@@ -96,13 +99,21 @@ import {
   <section id="education">
     <div class="container">
       <h2><span>04</span> Education</h2>
-      {education.map((ed) => (
-        <div class="edu">
-          <h3>{ed.degree}</h3>
-          <div class="tl-meta">{ed.school} · {ed.period}</div>
-          <p>{ed.detail}</p>
-        </div>
-      ))}
+      <div class="timeline">
+        {education.map((ed) => (
+          <div class="tl-item">
+            <div class="tl-left">
+              <div class="tl-period">{ed.period}</div>
+              {ed.logo && <div class="tl-logo"><img src={ed.logo} alt={ed.school} loading="lazy" /></div>}
+            </div>
+            <div class="tl-body">
+              <h3>{ed.degree}</h3>
+              <div class="tl-meta">{ed.school}</div>
+              <p>{ed.detail}</p>
+            </div>
+          </div>
+        ))}
+      </div>
       <h3 class="subhead">Certifications & Continuous Learning</h3>
       <div class="skill-tags">
         {certifications.map((c) => <span class="tag">{c}</span>)}
