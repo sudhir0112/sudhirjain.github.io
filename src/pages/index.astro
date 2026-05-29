@@ -45,7 +45,7 @@ const timeline = [
         <p class="role">{profile.title}</p>
         <p class="tagline">{profile.tagline}</p>
         <div class="socials">
-          {profile.socials.map((s) => (
+          {profile.socials.filter((s) => s.label !== 'GitHub').map((s) => (
             <a class="btn" href={s.url} target="_blank" rel="noopener">{s.label}</a>
           ))}
         </div>
