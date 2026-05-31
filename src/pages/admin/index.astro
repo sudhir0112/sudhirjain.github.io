@@ -1,0 +1,129 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+<Layout title="Admin" description="Private" noindex={true}>
+  <main class="admin">
+    <div class="admin-card">
+      <h1>Admin</h1>
+
+      <form id="pw-form" class="pw-form" autocomplete="off">
+        <input id="pw" type="password" placeholder="Password" autofocus
+               autocomplete="current-password" />
+        <button type="submit" class="btn">Unlock</button>
+      </form>
+
+      <div id="status" class="pw-status" aria-live="polite"></div>
+      <pre id="content" class="admin-content" hidden></pre>
+    </div>
+  </main>
+
+  <style is:global>
+    body { background: var(--bg); }
+    .admin {
+      min-height: 100vh;
+      display: flex; align-items: flex-start; justify-content: center;
+      padding: 4rem 1.25rem;
+    }
+    .admin-card {
+      width: 100%; max-width: 680px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2rem;
+      box-shadow: 0 1px 3px rgba(16, 24, 40, 0.04);
+    }
+    .admin-card h1 { margin-bottom: 1.25rem; font-size: 1.5rem; }
+    .pw-form { display: flex; gap: 0.5rem; }
+    .pw-form input {
+      flex: 1;
+      padding: 0.6rem 0.85rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 1rem;
+      font-family: inherit;
+    }
+    .pw-form input:focus { outline: 2px solid var(--accent-soft); border-color: var(--accent); }
+    .pw-status { margin-top: 0.85rem; color: var(--muted); font-size: 0.9rem; min-height: 1.25em; }
+    .pw-status.err { color: #c53030; }
+    .admin-content {
+      margin-top: 1.5rem;
+      padding: 1.25rem;
+      background: var(--bg-soft);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', monospace;
+      font-size: 0.95rem;
+      line-height: 1.65;
+      color: var(--text);
+    }
+  </style>
+
+  <script is:inline>
+    (function () {
+      const $ = (id) => document.getElementById(id);
+      const status = $('status');
+      const content = $('content');
+      const form = $('pw-form');
+
+      const setStatus = (msg, err) => {
+        status.textContent = msg || '';
+        status.classList.toggle('err', !!err);
+      };
+
+      const b64dec = (s) => Uint8Array.from(atob(s), (c) => c.charCodeAt(0));
+
+      async function deriveKey(password, salt, iter) {
+        const enc = new TextEncoder();
+        const baseKey = await crypto.subtle.importKey(
+          'raw', enc.encode(password), { name: 'PBKDF2' }, false, ['deriveKey']
+        );
+        return crypto.subtle.deriveKey(
+          { name: 'PBKDF2', salt, iterations: iter, hash: 'SHA-256' },
+          baseKey,
+          { name: 'AES-GCM', length: 256 },
+          false,
+          ['decrypt']
+        );
+      }
+
+      async function unlock(password) {
+        if (!password) return;
+        setStatus('Unlocking…');
+
+        let blob;
+        try {
+          const res = await fetch('/admin/data.enc', { cache: 'no-store' });
+          if (!res.ok) throw new Error('No content yet. Run `npm run encrypt-admin` and commit the output.');
+          blob = await res.json();
+        } catch (e) {
+          setStatus(e.message || 'Could not load content.', true);
+          return;
+        }
+
+        try {
+          const salt = b64dec(blob.salt);
+          const iv = b64dec(blob.iv);
+          const ct = b64dec(blob.ct);
+          const key = await deriveKey(password, salt, blob.iter);
+          const ptBuf = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, ct);
+          const pt = new TextDecoder().decode(ptBuf);
+          content.textContent = pt;
+          content.hidden = false;
+          form.remove();
+          setStatus('');
+        } catch (e) {
+          setStatus('Wrong password.', true);
+        }
+      }
+
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        unlock($('pw').value);
+      });
+    })();
+  </script>
+</Layout>
