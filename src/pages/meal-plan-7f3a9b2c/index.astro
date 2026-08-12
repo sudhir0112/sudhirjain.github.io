@@ -1,963 +1,1087 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 
-const meals = [
+// -----------------------------------------------------------------------------
+// The 7 dinners — shared between Sudhir view (in English) and Rohit view (Hindi)
+// FODMAP-compliant: no onion, no garlic (hing + ginger instead), no wheat,
+// no ripe fruit, paneer ≤ 40g/meal, moong dal small serve only, lactose-free
+// dairy where dairy is used, no eggs.
+// -----------------------------------------------------------------------------
+const dinners = [
   {
-    day: { en: 'Monday', hi: 'सोमवार' },
-    cuisine: 'Indian',
-    name: { en: 'Palak Tofu with Jeera Brown Rice', hi: 'पालक टोफू और जीरा ब्राउन राइस' },
-    cal: 510,
-    protein: 30,
-    time: { en: '30 min', hi: '30 मिनट' },
+    day: 'Monday',
+    dayHi: 'सोमवार',
+    name: {
+      en: 'Vegetable Moong Khichdi',
+      hi: 'सब्ज़ी वाली मूँग खिचड़ी',
+    },
+    time: { en: '30 min · one-pot', hi: '30 मिनट · एक बर्तन' },
     ingredients: {
       en: [
-        '200g firm tofu, cubed (pressed 15 min)',
-        '200g spinach, blanched & puréed',
-        '1 onion + 1 tomato + ginger-garlic, finely chopped',
-        '½ cup brown rice (uncooked) with 1 tsp cumin',
-        'Spices: turmeric, garam masala, chili, salt',
-        '1 tsp oil; lemon to finish',
-        'Side: kachumber (cucumber, onion, tomato, lemon)',
+        '½ cup rice (white or brown)',
+        '¼ cup yellow moong dal, washed',
+        '1 carrot, small cubes',
+        '½ zucchini or ½ cup bottle gourd (lauki), cubed',
+        '4–5 green beans, chopped',
+        '1 tsp ghee',
+        'Pinch of hing (asafoetida), ½ tsp cumin seeds',
+        '½ inch ginger, grated',
+        'Turmeric, salt, black pepper',
+        '3 cups water',
+        'Serve with lactose-free curd + cucumber-carrot kachumber',
       ],
       hi: [
-        '200 ग्राम कड़ा टोफू, क्यूब्स में (15 मिनट दबा कर रखें)',
-        '200 ग्राम पालक, उबाल कर पीस लें',
-        '1 प्याज़ + 1 टमाटर + अदरक-लहसुन, बारीक काटा हुआ',
-        '½ कप ब्राउन चावल (कच्चा) + 1 छोटा चम्मच जीरा',
-        'मसाले: हल्दी, गरम मसाला, मिर्च, नमक',
-        '1 छोटा चम्मच तेल; आख़िर में नींबू',
-        'साथ में: कचूमर (खीरा, प्याज़, टमाटर, नींबू)',
+        '½ कप चावल (सफ़ेद या ब्राउन)',
+        '¼ कप पीली मूँग दाल, धुली हुई',
+        '1 गाजर, छोटे टुकड़ों में',
+        '½ ज़ुकीनी (या ½ कप लौकी), कटी हुई',
+        '4–5 बीन्स, कटी हुई',
+        '1 छोटा चम्मच घी',
+        'चुटकी भर हींग, ½ छोटा चम्मच जीरा',
+        '½ इंच अदरक, कद्दूकस किया हुआ',
+        'हल्दी, नमक, थोड़ी काली मिर्च',
+        '3 कप पानी',
+        'साथ में: लैक्टोज़-मुक्त दही + खीरा-गाजर का कचूमर',
       ],
     },
     method: {
-      en: 'Sauté onion-tomato-ginger-garlic in 1 tsp oil. Add spices, then puréed spinach. Simmer 5 min, fold in tofu, cook 4 min. Serve over jeera brown rice with kachumber.',
-      hi: '1 छोटा चम्मच तेल में प्याज़-टमाटर-अदरक-लहसुन भूनें। मसाले डालें, फिर पिसा हुआ पालक डालें। 5 मिनट पकाएँ, टोफू डालकर 4 मिनट और पकाएँ। जीरा ब्राउन राइस और कचूमर के साथ परोसें।',
+      en: 'Heat ghee in pressure cooker. Splutter hing + cumin, then sauté ginger. Add veg, cook 2 min. Add washed dal + rice + turmeric + salt + water. Pressure-cook 3 whistles. Serve warm with curd and kachumber.',
+      hi: 'कुकर में घी गरम करें। हींग + जीरा तड़काएँ, फिर अदरक भूनें। सब्ज़ी डालकर 2 मिनट पकाएँ। धुली दाल + चावल + हल्दी + नमक + पानी डालें। 3 सीटी लगाएँ। दही और कचूमर के साथ गरम परोसें।',
     },
     note: {
-      en: 'Tofu (vs paneer) keeps protein high and calories low. Swap to 80g paneer if you want extra dairy that day.',
-      hi: 'टोफू से प्रोटीन ज़्यादा और कैलोरी कम रहती है। चाहें तो 80 ग्राम पनीर भी ले सकते हैं।',
+      en: 'Post-gym comfort food, easy on the gut. No onion or garlic — hing + ginger do the flavour job.',
+      hi: 'जिम के बाद हल्का, पेट के लिए आराम। प्याज़-लहसुन बिल्कुल नहीं — हींग और अदरक से स्वाद आएगा।',
     },
   },
+
   {
-    day: { en: 'Tuesday', hi: 'मंगलवार' },
-    cuisine: 'Mediterranean',
-    name: { en: 'Greek Chickpea Bowl with Tahini-Lemon Dressing', hi: 'ग्रीक चना बाउल (तहिनी-नींबू ड्रेसिंग के साथ)' },
-    cal: 520,
-    protein: 24,
+    day: 'Tuesday',
+    dayHi: 'मंगलवार',
+    name: {
+      en: 'Ragi Roti + Paneer Palak',
+      hi: 'रागी की रोटी + पनीर पालक',
+    },
+    time: { en: '35 min', hi: '35 मिनट' },
+    ingredients: {
+      en: [
+        'Ragi flour — enough for 2 rotis (~100g)',
+        '40g paneer, cubed',
+        '100g spinach, blanched & roughly puréed',
+        '1 small tomato, chopped',
+        '½ inch ginger, pinch of hing, ½ tsp cumin',
+        'Turmeric, salt, mild red chili, small pinch garam masala',
+        '1 tsp ghee or sunflower oil',
+      ],
+      hi: [
+        'रागी का आटा — 2 रोटी के लिए (~100 ग्राम)',
+        '40 ग्राम पनीर, क्यूब्स में',
+        '100 ग्राम पालक, उबालकर हल्का मैश किया हुआ',
+        '1 छोटा टमाटर, कटा हुआ',
+        '½ इंच अदरक, चुटकी हींग, ½ छोटा चम्मच जीरा',
+        'हल्दी, नमक, हल्की लाल मिर्च, चुटकी गरम मसाला',
+        '1 छोटा चम्मच घी या सूरजमुखी तेल',
+      ],
+    },
+    method: {
+      en: 'Knead ragi with warm water + salt into a stiff dough. Roll and cook 2 rotis on tawa. For gravy: heat ghee, splutter hing-cumin-ginger, add tomato + spices, cook 3 min. Add spinach purée, cook 4 min. Fold in paneer, cook 2 min. Serve with roti.',
+      hi: 'रागी आटे में गरम पानी + नमक मिलाकर सख्त आटा गूँधें। 2 रोटी बेलकर तवे पर सेकें। ग्रेवी: घी गरम करें, हींग-जीरा-अदरक भूनें, टमाटर + मसाले डालकर 3 मिनट पकाएँ। पालक डालें, 4 मिनट पकाएँ। पनीर डालकर 2 मिनट और। रोटी के साथ परोसें।',
+    },
+    note: {
+      en: 'Keep paneer to 40g — a small feature, not the bulk. Spinach in a small serving, not heavy.',
+      hi: 'पनीर सिर्फ़ 40 ग्राम — मुख्य नहीं, थोड़ा सा। पालक भी हल्की मात्रा में।',
+    },
+  },
+
+  {
+    day: 'Wednesday',
+    dayHi: 'बुधवार',
+    name: {
+      en: 'Rice Noodle Tofu Stir-Fry',
+      hi: 'राइस नूडल टोफू स्टिर-फ्राई',
+    },
     time: { en: '20 min', hi: '20 मिनट' },
     ingredients: {
       en: [
-        '1 cup cooked chickpeas (warm)',
-        '½ cup cherry tomatoes, halved',
-        '½ cucumber, diced',
-        '¼ red onion, thin sliced',
-        '6–8 kalamata olives',
-        '20g feta (optional, skip to cut dairy)',
-        'Parsley, chopped',
-        'Dressing: 1 tbsp tahini + lemon juice + 1 small garlic + water + salt',
+        '80g rice noodles, boiled and drained',
+        '100g firm tofu, cubed (pressed 15 min beforehand)',
+        '½ bell pepper, thin sliced',
+        '1 carrot, thin sliced',
+        '½ zucchini, thin sliced',
+        '3–4 bok choy leaves (or spinach), chopped',
+        '4–5 green beans, chopped',
+        '1 inch ginger, finely chopped',
+        '1 tsp sesame oil + 1 tsp sunflower oil',
+        'Salt, black pepper, lemon juice, cilantro',
       ],
       hi: [
-        '1 कप उबले चने (हल्के गरम)',
-        '½ कप चेरी टमाटर, आधे काटे हुए',
-        '½ खीरा, छोटे टुकड़ों में',
-        '¼ लाल प्याज़, पतला कटा हुआ',
-        '6–8 कलामाता ज़ैतून',
-        '20 ग्राम फ़ेटा चीज़ (वैकल्पिक; डेयरी कम करनी हो तो छोड़ दें)',
-        'हरा धनिया या पार्सले, कटा हुआ',
-        'ड्रेसिंग: 1 बड़ा चम्मच तहिनी + नींबू का रस + 1 छोटा लहसुन + पानी + नमक',
+        '80 ग्राम राइस नूडल, उबालकर पानी निथार दें',
+        '100 ग्राम कड़ा टोफू, क्यूब्स में (15 मिनट पहले दबाकर रखें)',
+        '½ शिमला मिर्च, पतले कटे',
+        '1 गाजर, पतले कटे',
+        '½ ज़ुकीनी, पतले कटे',
+        '3–4 बोक चोय के पत्ते (या पालक), कटे',
+        '4–5 बीन्स, कटी',
+        '1 इंच अदरक, बारीक कटा',
+        '1 छोटा चम्मच तिल का तेल + 1 छोटा चम्मच सूरजमुखी तेल',
+        'नमक, काली मिर्च, नींबू का रस, हरा धनिया',
       ],
     },
     method: {
-      en: 'Whisk dressing till pourable. Toss everything in a wide bowl, drizzle dressing, top with parsley.',
-      hi: 'ड्रेसिंग को फेंट लें ताकि बहाने लायक हो जाए। सब सामग्री एक चौड़े बाउल में मिलाएँ, ऊपर से ड्रेसिंग डालें, धनिया डालें।',
+      en: 'Heat oils on high, sauté ginger. Add hard veg first (carrot, beans, bell pepper) — 3 min. Then zucchini + bok choy — 2 min. Add tofu, cook 2 min. Toss in noodles. Season with salt, pepper, lemon. Top with cilantro.',
+      hi: 'तेज़ आँच पर तेल गरम करें, अदरक भूनें। पहले सख़्त सब्ज़ी (गाजर, बीन्स, शिमला मिर्च) — 3 मिनट। फिर ज़ुकीनी + बोक चोय — 2 मिनट। टोफू डालें, 2 मिनट। नूडल डालकर मिलाएँ। नमक, काली मिर्च, नींबू। धनिया छिड़कें।',
     },
     note: {
-      en: 'Cook a big batch of chickpeas at start of week — reuse for Friday lentil bowl variation.',
-      hi: 'हफ़्ते की शुरुआत में बड़ी मात्रा में चने उबाल लें — शुक्रवार के बाउल में भी काम आएँगे।',
+      en: 'No soy sauce — most contain wheat and add hidden onion/garlic. Sesame oil + salt + lemon carries the dish.',
+      hi: 'सोया सॉस नहीं — उसमें गेहूँ और छिपा हुआ प्याज़-लहसुन हो सकता है। तिल का तेल + नमक + नींबू ही स्वाद देंगे।',
     },
   },
+
   {
-    day: { en: 'Wednesday', hi: 'बुधवार' },
-    cuisine: 'Mexican',
-    name: { en: 'Black Bean & Quinoa Burrito Bowl', hi: 'ब्लैक बीन और क्विनोआ बरीटो बाउल' },
-    cal: 550,
-    protein: 28,
+    day: 'Thursday',
+    dayHi: 'गुरुवार',
+    name: {
+      en: 'Jowar Roti + Baingan Bharta',
+      hi: 'ज्वार की रोटी + बैंगन भरता',
+    },
+    time: { en: '40 min', hi: '40 मिनट' },
+    ingredients: {
+      en: [
+        'Jowar flour — for 2 rotis (~100g)',
+        '1 large eggplant (~300g)',
+        '1 small tomato, finely chopped',
+        '½ inch ginger, grated',
+        'Pinch of hing, ½ tsp cumin',
+        'Turmeric, salt, mild red chili',
+        '1 tsp mustard oil (or sunflower)',
+        'Cilantro to finish',
+        'Side: small bowl lactose-free curd',
+      ],
+      hi: [
+        'ज्वार का आटा — 2 रोटी के लिए (~100 ग्राम)',
+        '1 बड़ा बैंगन (~300 ग्राम)',
+        '1 छोटा टमाटर, बारीक कटा',
+        '½ इंच अदरक, कद्दूकस',
+        'चुटकी हींग, ½ छोटा चम्मच जीरा',
+        'हल्दी, नमक, हल्की लाल मिर्च',
+        '1 छोटा चम्मच सरसों का तेल (या सूरजमुखी)',
+        'ऊपर से हरा धनिया',
+        'साथ में: छोटा कटोरा लैक्टोज़-मुक्त दही',
+      ],
+    },
+    method: {
+      en: 'Roast eggplant on open flame till skin is charred and inside is soft. Cool, peel, mash. Heat oil, splutter hing-cumin-ginger, add tomato + spices, cook 3 min. Add mashed eggplant, cook 5 min. Finish with cilantro. Serve with jowar roti + curd.',
+      hi: 'बैंगन को सीधे गैस पर भूनें जब तक छिलका काला और अंदर मुलायम न हो जाए। ठंडा करके छिलका उतारें और मैश करें। तेल में हींग-जीरा-अदरक भूनें, टमाटर + मसाले 3 मिनट। मैश बैंगन डालकर 5 मिनट पकाएँ। धनिया डालें। ज्वार रोटी + दही के साथ परोसें।',
+    },
+    note: {
+      en: 'Roasting eggplant on the flame gives the smoky flavour that would normally come from garlic tempering.',
+      hi: 'गैस पर भूनने से जो धुएँदार स्वाद आता है, वही लहसुन के तड़के की जगह लेगा।',
+    },
+  },
+
+  {
+    day: 'Friday',
+    dayHi: 'शुक्रवार',
+    name: {
+      en: 'Quinoa Tofu Bowl',
+      hi: 'क्विनोआ टोफू बाउल',
+    },
     time: { en: '25 min', hi: '25 मिनट' },
     ingredients: {
       en: [
-        '¾ cup cooked quinoa',
-        '¾ cup black beans, warmed with cumin & garlic',
-        '½ bell pepper + ¼ onion, fajita-style sautéed',
-        '¼ cup corn salsa (corn, tomato, jalapeño, lime)',
-        '½ avocado, sliced',
-        '2 tbsp Greek yogurt (in place of sour cream)',
-        'Lime wedge, cilantro',
+        '¾ cup cooked quinoa (¼ cup uncooked)',
+        '100g firm tofu, cubed (pressed 15 min)',
+        '½ zucchini, ½ bell pepper, 1 carrot, 4–5 green beans, 1 handful spinach — all chopped',
+        '1 inch ginger, finely chopped',
+        'Pinch of hing, ½ tsp cumin',
+        'Turmeric, salt, black pepper',
+        '1 tsp olive or sunflower oil',
+        'Lemon juice + cilantro',
       ],
       hi: [
-        '¾ कप पकी हुई क्विनोआ',
-        '¾ कप काली बीन्स, जीरा-लहसुन के साथ गरम की हुई',
-        '½ शिमला मिर्च + ¼ प्याज़, फ़ज़िटा स्टाइल में भुनी हुई',
-        '¼ कप कॉर्न साल्सा (मक्का, टमाटर, हरी मिर्च, नींबू)',
-        '½ एवोकाडो, स्लाइस में',
-        '2 बड़े चम्मच ग्रीक दही (खट्टी क्रीम की जगह)',
-        'नींबू का टुकड़ा, हरा धनिया',
+        '¾ कप पका क्विनोआ (¼ कप कच्चा)',
+        '100 ग्राम कड़ा टोफू, क्यूब्स में (15 मिनट दबाकर रखें)',
+        '½ ज़ुकीनी, ½ शिमला मिर्च, 1 गाजर, 4–5 बीन्स, 1 मुट्ठी पालक — सब कटे',
+        '1 इंच अदरक, बारीक कटा',
+        'चुटकी हींग, ½ छोटा चम्मच जीरा',
+        'हल्दी, नमक, काली मिर्च',
+        '1 छोटा चम्मच जैतून या सूरजमुखी तेल',
+        'नींबू का रस + हरा धनिया',
       ],
     },
     method: {
-      en: 'Layer quinoa, then warm beans, then fajita veg. Top with corn salsa, avocado, yogurt dollop, cilantro, lime squeeze.',
-      hi: 'बेस में क्विनोआ रखें, फिर गरम बीन्स, फिर भुनी हुई सब्ज़ी। ऊपर से कॉर्न साल्सा, एवोकाडो, दही, धनिया डालें और नींबू निचोड़ें।',
+      en: 'Heat oil, splutter hing-cumin-ginger. Add tofu, cook till lightly golden (5 min). Add hard veg first (carrot, beans), then rest 2 min later. Add spices, cook 4 min. Add spinach, 1 min. Bowl the quinoa, top with the tofu-veg mix. Finish with lemon + cilantro.',
+      hi: 'तेल गरम करें, हींग-जीरा-अदरक भूनें। टोफू डालकर हल्का सुनहरा होने तक भूनें (5 मिनट)। सख़्त सब्ज़ी (गाजर, बीन्स) पहले डालें, 2 मिनट बाद बाकी। मसाले, 4 मिनट पकाएँ। पालक 1 मिनट। बाउल में क्विनोआ, ऊपर टोफू-सब्ज़ी। नींबू + धनिया।',
     },
     note: {
-      en: 'Skipping the tortilla saves ~200 cal and keeps the protein-to-cal ratio strong.',
-      hi: 'टोर्टिला न लेने से ~200 कैलोरी बच जाती है और प्रोटीन-कैलोरी अनुपात अच्छा रहता है।',
+      en: 'Press the tofu first — it soaks up spice and sears properly. High protein, easy digest.',
+      hi: 'टोफू पहले दबाएँ — मसाला अच्छा सोखेगा और अच्छे से सिंकेगा। प्रोटीन ज़्यादा, हज़म आसान।',
     },
   },
+
   {
-    day: { en: 'Thursday', hi: 'गुरुवार' },
-    cuisine: 'Indian',
-    name: { en: 'Rajma with Phulka & Kachumber', hi: 'राजमा + फुलका + कचूमर' },
-    cal: 510,
-    protein: 22,
-    time: { en: '30 min (using soaked beans)', hi: '30 मिनट (भीगी हुई राजमा से)' },
+    day: 'Saturday',
+    dayHi: 'शनिवार',
+    name: {
+      en: 'Rice Dosa + Aloo Sabzi',
+      hi: 'चावल का डोसा + आलू की सब्ज़ी',
+    },
+    time: { en: '30 min (batter ready)', hi: '30 मिनट (बैटर तैयार होने पर)' },
     ingredients: {
       en: [
-        '¾ cup cooked rajma (kidney beans)',
-        '1 onion + 1 tomato + ginger-garlic',
-        'Spices: cumin seeds, turmeric, coriander, garam masala, chili',
-        '½ tsp oil (no butter finish)',
-        '2 thin whole-wheat phulkas (no oil/ghee)',
-        'Kachumber on the side',
+        'Dosa batter — ½ cup per dosa, light on urad',
+        'A little oil for the tawa',
+        '2 medium potatoes, boiled and cubed',
+        '1 carrot, small dice',
+        '½ tsp mustard seeds (rai)',
+        'Pinch of hing, ½ tsp cumin, ½ inch grated ginger',
+        '5–6 curry leaves',
+        'Turmeric, salt',
+        '1 tsp oil',
+        'Cilantro, lemon',
+        'Side: small coconut chutney (2 tbsp)',
       ],
       hi: [
-        '¾ कप पकी हुई राजमा',
-        '1 प्याज़ + 1 टमाटर + अदरक-लहसुन',
-        'मसाले: जीरा, हल्दी, धनिया, गरम मसाला, मिर्च',
-        '½ छोटा चम्मच तेल (आख़िर में मक्खन नहीं)',
-        '2 पतले गेहूँ के फुलके (तेल/घी नहीं)',
-        'साथ में कचूमर',
+        'डोसा बैटर — प्रति डोसा ½ कप, हल्का उड़द',
+        'तवे के लिए थोड़ा तेल',
+        '2 मध्यम आलू, उबालकर क्यूब्स',
+        '1 गाजर, बारीक कटी',
+        '½ छोटा चम्मच सरसों/राई',
+        'चुटकी हींग, ½ छोटा चम्मच जीरा, ½ इंच कद्दूकस अदरक',
+        '5–6 करी पत्ते',
+        'हल्दी, नमक',
+        '1 छोटा चम्मच तेल',
+        'हरा धनिया, नींबू',
+        'साथ में: छोटी नारियल की चटनी (2 चम्मच)',
       ],
     },
     method: {
-      en: 'Pressure-cook soaked rajma. In ½ tsp oil, splutter cumin, sauté onion-ginger-garlic, add tomato + spices, cook to a thick masala. Add rajma + ½ cup of its cooking water, simmer 8 min. Serve with phulkas.',
-      hi: 'भिगोई हुई राजमा को कुकर में पका लें। ½ छोटा चम्मच तेल में जीरा तड़काएँ, प्याज़-अदरक-लहसुन भूनें, टमाटर और मसाले डालकर गाढ़ा मसाला बनाएँ। राजमा + ½ कप उसका पानी डालकर 8 मिनट उबालें। फुलके के साथ परोसें।',
+      en: 'Heat tawa, spread batter thin, cook both sides. For sabzi: heat oil, splutter mustard, add hing-cumin-ginger-curry leaves, then boiled potato + carrot + turmeric + salt. Sprinkle a little water, cook 3 min. Finish with cilantro + lemon. Serve alongside or wrapped in dosa, with small coconut chutney.',
+      hi: 'तवा गरम करें, बैटर पतला फैलाएँ, दोनों तरफ़ सेकें। सब्ज़ी: तेल में राई तड़काएँ, हींग-जीरा-अदरक-करी पत्ते डालें, फिर उबले आलू + गाजर + हल्दी + नमक। थोड़ा पानी छिड़ककर 3 मिनट पकाएँ। धनिया + नींबू। डोसा में भरें या साथ परोसें, छोटी नारियल चटनी के साथ।',
     },
     note: {
-      en: "Make 1.5x portion — repurpose leftovers as Saturday taco filling.",
-      hi: '1.5 गुना ज़्यादा बनाएँ — बची हुई राजमा शनिवार के टैकोज़ में काम आएगी।',
+      en: 'Weekend treat. Keep urad content in batter light (heavy urad is high FODMAP). Coconut chutney small — a garnish, not a side dish.',
+      hi: 'वीकेंड का हल्का ट्रीट। बैटर में उड़द कम रखें (ज़्यादा उड़द दिक़्क़त करता है)। नारियल चटनी छोटी मात्रा में।',
     },
   },
+
   {
-    day: { en: 'Friday', hi: 'शुक्रवार' },
-    cuisine: 'Mediterranean',
-    name: { en: 'Lentil & Roasted Vegetable Bowl with Yogurt Drizzle', hi: 'मसूर + भुनी हुई सब्ज़ी बाउल, दही ड्रिज़ल के साथ' },
-    cal: 480,
-    protein: 28,
-    time: { en: '35 min (mostly hands-off)', hi: '35 मिनट (ज़्यादातर ओवन में)' },
-    ingredients: {
-      en: [
-        '¾ cup cooked brown/green lentils',
-        '1 small zucchini, half eggplant, ½ bell pepper — diced',
-        '1 tsp olive oil, salt, pepper, dried oregano',
-        'Lemon-herb dressing (lemon + olive oil + parsley + garlic)',
-        '2 tbsp Greek yogurt + chopped mint (drizzle)',
-      ],
-      hi: [
-        '¾ कप पकी हुई ब्राउन/हरी मसूर',
-        '1 छोटी ज़ुकीनी, आधा बैंगन, ½ शिमला मिर्च — कटे हुए',
-        '1 छोटा चम्मच ज़ैतून का तेल, नमक, काली मिर्च, सूखा ऑरीगानो',
-        'नींबू-हर्ब ड्रेसिंग (नींबू + ज़ैतून तेल + पार्सले/धनिया + लहसुन)',
-        '2 बड़े चम्मच ग्रीक दही + पुदीना (ऊपर से डालने के लिए)',
-      ],
+    day: 'Sunday',
+    dayHi: 'रविवार',
+    name: {
+      en: 'Bajra Upma + Lactose-free Curd',
+      hi: 'बाजरे का उपमा + दही',
     },
-    method: {
-      en: 'Roast veg at 220°C / 425°F for 25 min. Toss with warm lentils + dressing in a wide bowl. Drizzle yogurt-mint over the top.',
-      hi: 'ओवन 220°C पर 25 मिनट तक सब्ज़ियाँ भूनें। गरम मसूर के साथ चौड़े बाउल में मिलाएँ + ड्रेसिंग डालें। ऊपर से दही-पुदीना का छिड़काव करें।',
-    },
-    note: {
-      en: 'One-tray oven dinner. Minimal active cooking.',
-      hi: 'एक ट्रे ओवन डिनर। हाथ का काम बहुत कम।',
-    },
-  },
-  {
-    day: { en: 'Saturday', hi: 'शनिवार' },
-    cuisine: 'Mexican',
-    name: { en: 'Tofu & Bean Tacos (2 small corn tortillas)', hi: 'टोफू और बीन टैकोज़ (2 छोटे कॉर्न टॉर्टिला)' },
-    cal: 580,
-    protein: 30,
     time: { en: '25 min', hi: '25 मिनट' },
     ingredients: {
       en: [
-        '150g firm tofu, crumbled',
-        'Spice mix: chili, cumin, paprika, garlic, lime, salt',
-        "½ cup refried pinto beans (or Thu's leftover rajma)",
-        '2 small corn tortillas, warmed',
-        'Pickled red onion, fresh tomato salsa, ½ avocado, cilantro',
+        '½ cup broken bajra (millet dalia)',
+        '1 carrot, small dice',
+        '½ bell pepper, chopped',
+        '2 tbsp roasted peanuts',
+        '½ tsp mustard seeds, pinch of hing',
+        '5–6 curry leaves',
+        '½ inch grated ginger',
+        'Turmeric, salt, lemon juice',
+        '1 tsp ghee or oil',
+        'Cilantro',
+        'Side: lactose-free curd + kachumber',
       ],
       hi: [
-        '150 ग्राम कड़ा टोफू, क्रम्बल किया हुआ',
-        'मसाला: मिर्च, जीरा, पैपरिका, लहसुन, नींबू, नमक',
-        '½ कप रीफ़्राइड पिंटो बीन्स (या गुरुवार की बची राजमा)',
-        '2 छोटे कॉर्न टॉर्टिला, गरम किए हुए',
-        'अचारी लाल प्याज़, ताज़ा टमाटर साल्सा, ½ एवोकाडो, हरा धनिया',
+        '½ कप बाजरा दलिया',
+        '1 गाजर, बारीक कटी',
+        '½ शिमला मिर्च, कटी',
+        '2 बड़े चम्मच भुनी मूँगफली',
+        '½ छोटा चम्मच राई, चुटकी हींग',
+        '5–6 करी पत्ते',
+        '½ इंच कद्दूकस अदरक',
+        'हल्दी, नमक, नींबू का रस',
+        '1 छोटा चम्मच घी या तेल',
+        'हरा धनिया',
+        'साथ में: लैक्टोज़-मुक्त दही + कचूमर',
       ],
     },
     method: {
-      en: 'Sauté crumbled tofu in 1 tsp oil with the spice mix till lightly browned (8 min). Warm beans and tortillas. Build tacos: beans → tofu → salsa → avocado → pickled onion → cilantro.',
-      hi: '1 छोटा चम्मच तेल में टोफू को मसालों के साथ हल्का सुनहरा होने तक भूनें (8 मिनट)। बीन्स और टॉर्टिला गरम करें। टैको बनाएँ: बीन्स → टोफू → साल्सा → एवोकाडो → अचारी प्याज़ → धनिया।',
+      en: 'Rinse bajra dalia and cook in 1½ cups water for 15 min till soft. In a pan, heat ghee, splutter mustard, add hing-ginger-curry leaves-peanuts. Add veg, sauté 3 min. Add turmeric + salt + cooked bajra, mix through. Finish with lemon + cilantro. Serve with curd + kachumber.',
+      hi: 'बाजरा दलिया धोकर 1½ कप पानी में 15 मिनट पकाएँ। कड़ाही में घी में राई तड़काएँ, हींग-अदरक-करी पत्ते-मूँगफली डालें। सब्ज़ी 3 मिनट भूनें। हल्दी + नमक + पका बाजरा मिलाएँ। नींबू + धनिया। दही + कचूमर के साथ परोसें।',
     },
     note: {
-      en: 'Weekend treat — slightly higher carbs from tortillas. The tofu scramble mimics egg-style fillings.',
-      hi: 'वीकेंड की हल्की "ट्रीट" — टॉर्टिला से कार्ब्स थोड़े ज़्यादा। टोफू स्क्रैम्बल अंडे जैसी फ़िलिंग का काम करता है।',
-    },
-  },
-  {
-    day: { en: 'Sunday', hi: 'रविवार' },
-    cuisine: 'Indian',
-    name: { en: 'Moong Sprouts & Paneer Bhurji + Multigrain Roti', hi: 'मूँग स्प्राउट्स + पनीर भुर्जी + मल्टीग्रेन रोटी' },
-    cal: 550,
-    protein: 32,
-    time: { en: '25 min', hi: '25 मिनट' },
-    ingredients: {
-      en: [
-        '¾ cup moong sprouts (soaked 24-36h, drained)',
-        '60g paneer, crumbled',
-        '1 onion + 1 tomato, finely chopped',
-        'Ginger, green chili, cumin, turmeric, garam masala',
-        '1 tsp oil; lemon + cilantro to finish',
-        '1 multigrain roti',
-        'Small cucumber raita (½ cup yogurt + cucumber + cumin)',
-      ],
-      hi: [
-        '¾ कप मूँग स्प्राउट्स (24–36 घंटे भिगो कर अंकुरित)',
-        '60 ग्राम पनीर, क्रम्बल किया हुआ',
-        '1 प्याज़ + 1 टमाटर, बारीक कटे हुए',
-        'अदरक, हरी मिर्च, जीरा, हल्दी, गरम मसाला',
-        '1 छोटा चम्मच तेल; आख़िर में नींबू + धनिया',
-        '1 मल्टीग्रेन रोटी',
-        'छोटा खीरा रायता (½ कप दही + खीरा + भुना जीरा)',
-      ],
-    },
-    method: {
-      en: 'Sauté onion-ginger-chili in oil. Add tomato + spices, cook to a thick masala. Add sprouts, splash of water, cover-cook 5 min. Fold in paneer crumble, cook 2 min. Finish with lemon + cilantro. Serve with roti and raita.',
-      hi: 'तेल में प्याज़-अदरक-मिर्च भूनें। टमाटर + मसाले डालकर गाढ़ा मसाला बनाएँ। स्प्राउट्स + थोड़ा पानी डालें, ढककर 5 मिनट पकाएँ। पनीर डालकर 2 मिनट और पकाएँ। नींबू + धनिया डालें। रोटी और रायता के साथ परोसें।',
-    },
-    note: {
-      en: 'The one dinner where dairy plays a real role. Sprouts boost protein well beyond a regular bhurji.',
-      hi: 'हफ़्ते का एक दिन जब डेयरी वाक़ई शामिल है। स्प्राउट्स से प्रोटीन साधारण भुर्जी से बहुत ज़्यादा हो जाता है।',
+      en: 'Sunday-light. Quick to cook, gentle to end the week on.',
+      hi: 'रविवार का हल्का खाना। जल्दी बनता है, हफ़्ता आराम से ख़त्म करता है।',
     },
   },
 ];
 
-const cuisineName = {
-  Indian: { en: 'Indian', hi: 'भारतीय' },
-  Mediterranean: { en: 'Mediterranean', hi: 'भूमध्यसागरीय' },
-  Mexican: { en: 'Mexican', hi: 'मेक्सिकन' },
+// -----------------------------------------------------------------------------
+// Sudhir's full week — waking, breakfast, lunch, snack, dinner
+// Office days: Mon, Tue, Thu    Home days: Wed, Fri, Sat, Sun
+// Gym days: Mon, Wed, Fri
+// -----------------------------------------------------------------------------
+const wakingTea = {
+  time: '6:15 AM',
+  label: 'On waking',
+  dish: 'Saunf-elaichi tea',
+  detail: 'Warm fennel-cardamom infusion. Genuinely helps digestion — keep this daily.',
 };
 
-const cuisineColor = {
-  Indian: '#f0a060',
-  Mediterranean: '#7cd3a8',
-  Mexican: '#e57373',
-};
+const snackOptions = [
+  { time: '4:00 PM', label: 'Snack', dish: 'Peanuts — small handful', detail: '~15 peanuts. Skip if not hungry — snacking is optional.' },
+  { time: '4:00 PM', label: 'Snack', dish: 'Pumpkin seeds (1 tbsp)', detail: 'Or sunflower seeds. Roasted, no salt needed.' },
+  { time: '4:00 PM', label: 'Snack', dish: 'Rice cakes (2) + almond butter', detail: 'Plain rice cakes, thin smear of almond butter (no honey).' },
+  { time: '4:00 PM', label: 'Snack', dish: 'Rice cakes + pumpkin seeds', detail: 'Optional — skip if not hungry.' },
+];
 
-const shopping = [
+const sudhirDays = [
   {
-    category: { en: 'Produce', hi: 'ताज़ी सब्ज़ी / फल' },
-    items: {
-      en: [
-        '4 onions, 6 tomatoes, 1 small red onion',
-        '1 bunch cilantro, 1 bunch parsley, fresh mint (small bunch)',
-        '2 cucumbers, 2 bell peppers, 1 zucchini, 1 small eggplant',
-        '200g spinach',
-        '2 limes, 2 lemons, 4 garlic cloves, small ginger',
-        '2 avocados, 2 green chilies',
-      ],
-      hi: [
-        '4 प्याज़, 6 टमाटर, 1 छोटा लाल प्याज़',
-        '1 गुच्छा हरा धनिया, 1 गुच्छा पार्सले, ताज़ा पुदीना (छोटा गुच्छा)',
-        '2 खीरे, 2 शिमला मिर्च, 1 ज़ुकीनी, 1 छोटा बैंगन',
-        '200 ग्राम पालक',
-        '2 हरे नींबू (lime), 2 बड़े नींबू (lemon), 4 कली लहसुन, छोटा अदरक का टुकड़ा',
-        '2 एवोकाडो, 2 हरी मिर्च',
-      ],
-    },
+    day: 'Monday',
+    context: 'Office · gym',
+    meals: [
+      wakingTea,
+      {
+        time: '9:30 AM', label: 'Breakfast (office)', dish: 'Tofu bhurji + 2 rice idli + orange',
+        detail: '150g firm tofu scrambled with hing, ginger, turmeric, mild chili — no onion or garlic. Serve with plain rice idli (light on urad) and an orange. Skip the ABC juice (apple + beet are the problem).',
+      },
+      {
+        time: '1:30 PM', label: 'Lunch', dish: 'Ragi roti + palak paneer + kachumber + curd',
+        detail: '2 ragi rotis. Small palak-paneer (40g paneer, small spinach serve, hing + ginger, small tomato — no onion/garlic). Kachumber: cucumber + carrot + small tomato + lemon. Small bowl lactose-free curd.',
+      },
+      snackOptions[0],
+      {
+        time: '6:30 PM', label: 'Dinner', dish: dinners[0].name.en, detail: dinners[0].note.en,
+        dinner: dinners[0],
+      },
+    ],
   },
   {
-    category: { en: 'Pantry', hi: 'किराना (सूखा सामान)' },
-    items: {
-      en: [
-        'Chickpeas (1 can or ½ cup dry)',
-        'Black beans (1 can)',
-        'Pinto beans (1 can) — or skip and use rajma leftovers',
-        'Rajma / kidney beans (1 cup dry)',
-        'Whole moong beans (½ cup dry, for sprouting)',
-        'Brown/green lentils (½ cup dry)',
-        'Brown rice, quinoa',
-        'Whole-wheat flour, multigrain flour',
-        'Corn tortillas (small pack of 6)',
-        'Kalamata olives, tahini, olive oil',
-      ],
-      hi: [
-        'चना (1 डिब्बा या ½ कप सूखा)',
-        'काली बीन्स (1 डिब्बा)',
-        'पिंटो बीन्स (1 डिब्बा) — या छोड़कर बची हुई राजमा से काम चलाएँ',
-        'राजमा (1 कप सूखी)',
-        'साबुत मूँग (½ कप सूखी, स्प्राउटिंग के लिए)',
-        'ब्राउन/हरी मसूर (½ कप सूखी)',
-        'ब्राउन चावल, क्विनोआ',
-        'गेहूँ का आटा, मल्टीग्रेन आटा',
-        'कॉर्न टॉर्टिला (6 का छोटा पैकेट)',
-        'कलामाता ज़ैतून, तहिनी, ज़ैतून का तेल',
-      ],
-    },
+    day: 'Tuesday',
+    context: 'Office',
+    meals: [
+      wakingTea,
+      {
+        time: '9:30 AM', label: 'Breakfast (office)', dish: 'Poha (light) + peanuts + papaya',
+        detail: 'Light poha with peanuts, hing + ginger + curry leaves + grated carrot — no onion. Papaya on the side (skip ABC juice).',
+      },
+      {
+        time: '1:30 PM', label: 'Lunch', dish: 'Jowar roti + moong dal + zucchini-carrot sabzi + curd',
+        detail: '2 jowar rotis, small bowl well-cooked moong dal (hing-tempered, no onion/garlic), sautéed zucchini-carrot sabzi, kachumber, small bowl lactose-free curd.',
+      },
+      snackOptions[1],
+      {
+        time: '6:30 PM', label: 'Dinner', dish: dinners[1].name.en, detail: dinners[1].note.en,
+        dinner: dinners[1],
+      },
+    ],
   },
   {
-    category: { en: 'Refrigerated / dairy', hi: 'फ्रिज वाली चीज़ें / डेयरी' },
-    items: {
-      en: [
-        'Firm tofu — 1 block (~350g)',
-        'Greek yogurt — small tub',
-        'Paneer — 100g',
-        'Feta — 30g (optional, Tue)',
-      ],
-      hi: [
-        'कड़ा टोफू — 1 ब्लॉक (लगभग 350 ग्राम)',
-        'ग्रीक दही — छोटा डिब्बा',
-        'पनीर — 100 ग्राम',
-        'फ़ेटा — 30 ग्राम (वैकल्पिक, मंगलवार के लिए)',
-      ],
-    },
+    day: 'Wednesday',
+    context: 'Home · gym',
+    meals: [
+      wakingTea,
+      {
+        time: '9:30 AM', label: 'Breakfast (home)', dish: 'Oats + almond milk + strawberries + chia + almonds',
+        detail: '½ cup dry rolled oats cooked with unsweetened almond milk (or lactose-free milk). Top with 10 almonds, 1 tbsp chia seeds, a handful of strawberries.',
+      },
+      {
+        time: '1:30 PM', label: 'Lunch', dish: 'Rice + moong dal + green bean-zucchini sabzi + curd',
+        detail: '½ cup cooked rice, small bowl moong dal, sautéed green beans + zucchini (hing + ginger), kachumber, small bowl lactose-free curd.',
+      },
+      snackOptions[2],
+      {
+        time: '6:30 PM', label: 'Dinner', dish: dinners[2].name.en, detail: dinners[2].note.en,
+        dinner: dinners[2],
+      },
+    ],
   },
   {
-    category: { en: 'Spices', hi: 'मसाले' },
-    items: {
-      en: [
-        'Cumin (whole + ground), coriander powder, turmeric',
-        'Garam masala, chili powder, paprika',
-        'Dried oregano, salt, pepper',
-        'Mustard seeds (optional)',
-      ],
-      hi: [
-        'जीरा (साबुत + पिसा), धनिया पाउडर, हल्दी',
-        'गरम मसाला, मिर्च पाउडर, पैपरिका',
-        'सूखा ऑरीगानो, नमक, काली मिर्च',
-        'राई/सरसों (वैकल्पिक)',
-      ],
-    },
+    day: 'Thursday',
+    context: 'Office',
+    meals: [
+      wakingTea,
+      {
+        time: '9:30 AM', label: 'Breakfast (office)', dish: 'Tofu bhurji + 2 rice idli + grapes',
+        detail: 'Same as Monday — 150g tofu bhurji (hing + ginger, no onion), 2 rice idli. Small bunch of grapes.',
+      },
+      {
+        time: '1:30 PM', label: 'Lunch', dish: 'Ragi roti + palak paneer + kachumber + curd',
+        detail: 'Same as Monday lunch. 2 ragi rotis + 40g paneer palak + salad + lactose-free curd.',
+      },
+      snackOptions[0],
+      {
+        time: '6:30 PM', label: 'Dinner', dish: dinners[3].name.en, detail: dinners[3].note.en,
+        dinner: dinners[3],
+      },
+    ],
+  },
+  {
+    day: 'Friday',
+    context: 'Home · gym',
+    meals: [
+      wakingTea,
+      {
+        time: '9:30 AM', label: 'Breakfast (home)', dish: 'Oats + almond milk + walnuts + under-ripe banana + chia',
+        detail: '½ cup dry oats cooked with almond or lactose-free milk. Top with walnuts, an under-ripe banana (small piece only), 1 tbsp chia.',
+      },
+      {
+        time: '1:30 PM', label: 'Lunch', dish: 'Bajra roti + moong dal + zucchini sabzi + curd',
+        detail: '2 bajra rotis, small moong dal, zucchini sabzi (hing + ginger, no onion), kachumber, small bowl lactose-free curd.',
+      },
+      { time: '4:00 PM', label: 'Snack', dish: 'Sunflower seeds (1 tbsp)', detail: 'Or 10 almonds. Skip if not hungry.' },
+      {
+        time: '6:30 PM', label: 'Dinner', dish: dinners[4].name.en, detail: dinners[4].note.en,
+        dinner: dinners[4],
+      },
+    ],
+  },
+  {
+    day: 'Saturday',
+    context: 'Home · weekend',
+    meals: [
+      wakingTea,
+      {
+        time: '9:30 AM', label: 'Breakfast (home)', dish: 'Savoury oats upma',
+        detail: '½ cup oats cooked upma-style with grated carrot, chopped bell pepper, peanuts, hing, curry leaves, ginger, turmeric. Serve with an orange.',
+      },
+      {
+        time: '1:30 PM', label: 'Lunch', dish: 'Ragi roti + palak paneer + kachumber + curd',
+        detail: 'Weekend version of the Mon/Thu lunch. Take time to enjoy — sit down, don\'t rush.',
+      },
+      snackOptions[3],
+      {
+        time: '6:30 PM', label: 'Dinner', dish: dinners[5].name.en, detail: dinners[5].note.en,
+        dinner: dinners[5],
+      },
+    ],
+  },
+  {
+    day: 'Sunday',
+    context: 'Home · weekend',
+    meals: [
+      wakingTea,
+      {
+        time: '9:30 AM', label: 'Breakfast (home)', dish: 'Overnight oats + lactose-free curd + strawberries + chia',
+        detail: 'Made the night before: ½ cup oats + lactose-free curd + 1 tbsp chia + strawberries + a few almonds. Refrigerate. Grab and eat cold.',
+      },
+      {
+        time: '1:30 PM', label: 'Lunch', dish: 'Vegetable pulao (rice) + moong dal + curd',
+        detail: 'Light rice pulao with carrot, zucchini, bell pepper, peanuts, hing (no onion/garlic). Small moong dal on the side. Lactose-free curd.',
+      },
+      snackOptions[0],
+      {
+        time: '6:30 PM', label: 'Dinner', dish: dinners[6].name.en, detail: dinners[6].note.en,
+        dinner: dinners[6],
+      },
+    ],
   },
 ];
 
-const prepTips = {
-  en: [
-    { bold: 'Sprout the moong.', rest: ' Soak ½ cup overnight, drain, leave in a damp cloth or jar for 24–36h until tails appear.' },
-    { bold: 'Cook the bases.', rest: ' Make 1 batch each of brown rice, quinoa, and lentils. Refrigerate in flat containers — they cool faster and reheat better.' },
-    { bold: 'Pressure-cook the rajma', rest: " on Wednesday night for Thursday's dinner." },
-    { bold: 'Press tofu in advance.', rest: ' Place between two plates with a weight for 15 min before cooking — it sears better and absorbs spice.' },
-    { bold: 'Chop the onion-tomato base.', rest: " A small jar of finely chopped onion + tomato covers Mon, Thu, and Sun's masalas." },
-  ],
-  hi: [
-    { bold: 'मूँग अंकुरित करें।', rest: ' ½ कप रात भर भिगोकर पानी निकाल दें, गीले कपड़े या जार में 24–36 घंटे तक रखें जब तक अंकुर न आ जाएँ।' },
-    { bold: 'बेस पहले से तैयार करें।', rest: ' एक-एक बैच ब्राउन चावल, क्विनोआ और मसूर पका लें। चपटे डिब्बे में रखें — जल्दी ठंडे होते हैं और दुबारा गरम करना आसान रहता है।' },
-    { bold: 'बुधवार रात राजमा प्रेशर-कुक कर लें', rest: ' — गुरुवार के डिनर के लिए।' },
-    { bold: 'टोफू पहले से दबाकर रखें।', rest: ' दो प्लेटों के बीच 15 मिनट वज़न रखकर दबाएँ — मसाला अच्छा सोखेगा और तलने में अच्छा रहेगा।' },
-    { bold: 'प्याज़-टमाटर का बेस बना लें।', rest: ' एक छोटे जार में बारीक प्याज़ + टमाटर रखें — सोमवार, गुरुवार और रविवार तीनों के मसालों के काम आएगा।' },
-  ],
-};
+const notes = [
+  {
+    title: 'Gastritis & chest pain',
+    body: 'Smaller, more frequent portions beat 3 large meals. Avoid lying down for at least 45 min after eating. Go easy on fried food and strong coffee. If chest pain persists or worsens, that\'s a doctor conversation, not a diet one.',
+  },
+  {
+    title: 'The Boldfit supplement',
+    body: 'Most prebiotic blends are inulin/FOS/chicory — all concentrated high-FODMAP. Check the label. Consider pausing while on the elimination phase. Magnesium and omega-3 stay.',
+  },
+  {
+    title: 'Gluten test — get it before you cut wheat',
+    body: 'Cutting wheat removes both gluten and fructans at once, so you won\'t know which one was the trigger. If you want a real answer, ask for a coeliac panel before you\'ve been off wheat for weeks.',
+  },
+  {
+    title: 'Eating out',
+    body: 'One meal a week outside is fine. Favour grilled/plain preparations, ask for no onion-garlic where possible. Don\'t catastrophise the occasional slip.',
+  },
+  {
+    title: 'What\'s next',
+    body: 'This is elimination — not permanent. Once symptoms settle, reintroduce one FODMAP group at a time to identify your actual triggers.',
+  },
+];
 
-const swaps = {
-  en: [
-    { bold: 'Lower dairy week?', rest: " Skip the feta on Tuesday, swap Wed's yogurt dollop for guacamole, halve the paneer on Sunday and bump tofu in Monday's dish to 250g." },
-    { bold: 'Higher protein push?', rest: ' Add 30g roasted chickpeas as a crunch topping to Mon, Wed, or Fri bowls (~+8g protein).' },
-    { bold: 'Dining out one night?', rest: " Drop Saturday's tacos — easiest meal to source vegetarian outside." },
-    { bold: "Don't eat brown rice?", rest: " Sub millet (jowar/bajra) or cauliflower rice in Monday's dish." },
-  ],
-  hi: [
-    { bold: 'डेयरी और कम करनी है?', rest: ' मंगलवार को फ़ेटा छोड़ दें, बुधवार की दही की जगह ग्वकामोले लें, रविवार को पनीर आधा कर दें और सोमवार में टोफू 250 ग्राम कर दें।' },
-    { bold: 'और प्रोटीन चाहिए?', rest: ' सोम/बुध/शुक्र के बाउल पर 30 ग्राम भुने चने ऊपर से छिड़कें (~+8 ग्राम प्रोटीन)।' },
-    { bold: 'एक दिन बाहर खाना है?', rest: ' शनिवार के टैकोज़ छोड़ सकते हैं — बाहर शाकाहारी विकल्प सबसे आसानी से मिलते हैं।' },
-    { bold: 'ब्राउन चावल नहीं खाते?', rest: ' सोमवार के डिनर में जौ/बाजरा या फूलगोभी (cauliflower) चावल ले सकते हैं।' },
-  ],
-};
-
-const i18n = {
-  privatePrefix: { en: 'Private · Week of', hi: 'निजी · सप्ताह:' },
-  weekDateEn: new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
-  weekDateHi: new Date().toLocaleDateString('hi-IN', { day: 'numeric', month: 'long', year: 'numeric' }),
-  pageTitle: { en: 'Weekly Dinner Plan', hi: 'साप्ताहिक डिनर योजना' },
-  tagline: {
-    en: 'Seven vegetarian dinners — Indian, Mediterranean, Mexican — designed for weight maintenance and high protein. No eggs. Dairy used in moderation.',
-    hi: 'सात शाकाहारी डिनर — भारतीय, भूमध्यसागरीय और मेक्सिकन — वज़न संतुलन और ज़्यादा प्रोटीन के लिए। अंडे नहीं। डेयरी सीमित मात्रा में।',
-  },
-  pills: {
-    en: ['~500 kcal / meal', '25–30g protein', 'Vegetarian, no eggs', 'Dairy: light'],
-    hi: ['~500 कैलोरी / डिनर', '25–30 ग्राम प्रोटीन', 'शाकाहारी, अंडे नहीं', 'डेयरी: कम'],
-  },
-  sections: {
-    dinners: { en: 'Dinners', hi: 'डिनर' },
-    shopping: { en: 'Shopping list', hi: 'खरीदारी सूची' },
-    prep: { en: 'Sunday prep (30 min, saves the week)', hi: 'रविवार की तैयारी (30 मिनट, हफ़्ते भर का काम आसान)' },
-    swaps: { en: 'Swaps & tweaks', hi: 'बदलाव और सुझाव' },
-  },
-  shoppingLead: {
-    en: 'Quantities are for a single person, one week. Adjust up for partners or leftovers.',
-    hi: 'मात्रा एक व्यक्ति, एक हफ़्ते के लिए है। अगर बचाना है या और लोग हैं तो बढ़ा लें।',
-  },
-  fieldIngredients: { en: 'Ingredients', hi: 'सामग्री' },
-  fieldMethod: { en: 'Method', hi: 'विधि' },
-  unitKcal: { en: 'kcal', hi: 'कैलोरी' },
-  unitProtein: { en: 'g protein', hi: 'ग्राम प्रोटीन' },
-  tonightPill: { en: 'Tonight', hi: 'आज रात' },
-  footer: {
-    en: 'Private page · not indexed · accessible by direct link only.',
-    hi: 'निजी पृष्ठ · सर्च में नहीं · सिर्फ़ सीधे लिंक से खुलता है।',
-  },
-  backLink: { en: '← back to sudhirjain.com', hi: '← sudhirjain.com पर वापस' },
-};
+const weekOf = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
 ---
 
 <Layout
-  title="Weekly Dinner Plan — Sudhir Jain"
-  description="Private weekly dinner plan"
+  title="Meal plan — Sudhir Jain"
+  description="Private low-FODMAP meal plan"
   noindex={true}
 >
-  <div class="mp-root" data-lang="en">
-    <header class="page-hero">
+  <div class="mp" data-view="sudhir">
+    <header class="hero">
       <div class="container">
-        <div class="hero-top">
-          <p class="eyebrow">
-            <span lang="en">{i18n.privatePrefix.en} {i18n.weekDateEn}</span>
-            <span lang="hi">{i18n.privatePrefix.hi} {i18n.weekDateHi}</span>
-          </p>
-          <div class="lang-toggle" role="tablist" aria-label="Language">
-            <button data-lang-set="en" class="active" aria-pressed="true">EN</button>
-            <button data-lang-set="hi" aria-pressed="false">हिंदी</button>
-          </div>
-        </div>
-        <h1>
-          <span lang="en">{i18n.pageTitle.en}</span>
-          <span lang="hi">{i18n.pageTitle.hi}</span>
-        </h1>
-        <p class="tagline">
-          <span lang="en">{i18n.tagline.en}</span>
-          <span lang="hi">{i18n.tagline.hi}</span>
+        <p class="overline">Private · Week of {weekOf}</p>
+        <h1>This week's plan</h1>
+        <p class="lede">
+          Low-FODMAP, lactose-free, no eggs, no onion or garlic — calm on the gut
+          while things settle. Two views: yours and Rohit's.
         </p>
-        <div class="brief-tags">
-          {i18n.pills.en.map((p, i) => (
-            <span class="tag-pill">
-              <span lang="en">{p}</span>
-              <span lang="hi">{i18n.pills.hi[i]}</span>
-            </span>
-          ))}
-        </div>
+
+        <nav class="tabs" role="tablist" aria-label="View">
+          <button data-view-set="sudhir" class="active" aria-pressed="true">
+            <span class="tab-label">Sudhir</span>
+            <span class="tab-sub">all meals · day-by-day</span>
+          </button>
+          <button data-view-set="rohit" aria-pressed="false">
+            <span class="tab-label">रोहित</span>
+            <span class="tab-sub">शाम का खाना · हिंदी</span>
+          </button>
+        </nav>
       </div>
     </header>
 
     <main>
-      <section class="meals-section">
+      <!-- ─── Sudhir view ─── -->
+      <section class="view sudhir-view">
         <div class="container">
-          <h2>
-            <span>01</span>
-            <span lang="en">{i18n.sections.dinners.en}</span>
-            <span lang="hi">{i18n.sections.dinners.hi}</span>
-          </h2>
-          <div class="meal-grid">
-            {meals.map((m, i) => (
-              <details class="meal-card" data-day={m.day.en}>
+          <div class="days">
+            {sudhirDays.map((day, di) => (
+              <details class="day-card" data-day={day.day}>
                 <summary>
-                  <div class="meal-head">
-                    <div class="meal-day">
-                      <span class="day-num">{String(i + 1).padStart(2, '0')}</span>
-                      <span class="day-name">
-                        <span lang="en">{m.day.en}</span>
-                        <span lang="hi">{m.day.hi}</span>
-                      </span>
-                    </div>
-                    <span class="cuisine-badge" style={`--c: ${cuisineColor[m.cuisine]}`}>
-                      <span lang="en">{cuisineName[m.cuisine].en}</span>
-                      <span lang="hi">{cuisineName[m.cuisine].hi}</span>
-                    </span>
-                  </div>
-                  <h3>
-                    <span lang="en">{m.name.en}</span>
-                    <span lang="hi">{m.name.hi}</span>
-                  </h3>
-                  <div class="macros">
-                    <span>{m.cal} <span lang="en">{i18n.unitKcal.en}</span><span lang="hi">{i18n.unitKcal.hi}</span></span>
-                    <span class="dot">·</span>
-                    <span>{m.protein}<span lang="en">{i18n.unitProtein.en}</span><span lang="hi"> {i18n.unitProtein.hi}</span></span>
-                    <span class="dot">·</span>
-                    <span>
-                      <span lang="en">{m.time.en}</span>
-                      <span lang="hi">{m.time.hi}</span>
-                    </span>
-                  </div>
+                  <p class="overline day-context">{day.day} · {day.context}</p>
+                  <h2 class="day-heading">Dinner: {day.meals[day.meals.length - 1].dish}</h2>
+                  <p class="day-meta">{day.meals.length} meals · tap to see the day</p>
                   <span class="expand-hint" aria-hidden="true">
-                    <span class="hint-closed">
-                      <span lang="en">Tap for recipe</span>
-                      <span lang="hi">रेसिपी देखें</span>
-                    </span>
-                    <span class="hint-open">
-                      <span lang="en">Hide recipe</span>
-                      <span lang="hi">रेसिपी छुपाएँ</span>
-                    </span>
+                    <span class="hint-closed">Open day</span>
+                    <span class="hint-open">Close</span>
                     <svg class="chevron" width="12" height="12" viewBox="0 0 12 12" fill="none">
                       <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
                   </span>
                 </summary>
-                <div class="meal-body">
-                  <h4>
-                    <span lang="en">{i18n.fieldIngredients.en}</span>
-                    <span lang="hi">{i18n.fieldIngredients.hi}</span>
-                  </h4>
-                  <ul lang="en">
-                    {m.ingredients.en.map((ing) => <li>{ing}</li>)}
-                  </ul>
-                  <ul lang="hi">
-                    {m.ingredients.hi.map((ing) => <li>{ing}</li>)}
-                  </ul>
-                  <h4>
-                    <span lang="en">{i18n.fieldMethod.en}</span>
-                    <span lang="hi">{i18n.fieldMethod.hi}</span>
-                  </h4>
-                  <p lang="en">{m.method.en}</p>
-                  <p lang="hi">{m.method.hi}</p>
-                  <div class="meal-note">
-                    <span lang="en">{m.note.en}</span>
-                    <span lang="hi">{m.note.hi}</span>
-                  </div>
+                <div class="day-body">
+                  {day.meals.map((meal) => (
+                    <div class="meal">
+                      <p class="overline meal-time">{meal.time} · {meal.label}</p>
+                      <h3 class="meal-dish">{meal.dish}</h3>
+                      <p class="meal-detail">{meal.detail}</p>
+                      {meal.dinner && (
+                        <details class="recipe">
+                          <summary>
+                            <span class="hint-closed">Recipe</span>
+                            <span class="hint-open">Hide recipe</span>
+                            <svg class="chevron" width="12" height="12" viewBox="0 0 12 12" fill="none">
+                              <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                          </summary>
+                          <div class="recipe-body">
+                            <p class="overline">Ingredients</p>
+                            <ul>
+                              {meal.dinner.ingredients.en.map((ing) => <li>{ing}</li>)}
+                            </ul>
+                            <p class="overline">Method</p>
+                            <p class="method">{meal.dinner.method.en}</p>
+                          </div>
+                        </details>
+                      )}
+                    </div>
+                  ))}
                 </div>
               </details>
             ))}
           </div>
+
+          <section class="notes">
+            <h2 class="section-heading">From your nutritionist</h2>
+            {notes.map((n) => (
+              <div class="note-card">
+                <h3>{n.title}</h3>
+                <p>{n.body}</p>
+              </div>
+            ))}
+          </section>
         </div>
       </section>
 
-      <section class="shopping-section">
+      <!-- ─── Rohit view (Hindi) ─── -->
+      <section class="view rohit-view" lang="hi">
         <div class="container">
-          <h2>
-            <span>02</span>
-            <span lang="en">{i18n.sections.shopping.en}</span>
-            <span lang="hi">{i18n.sections.shopping.hi}</span>
-          </h2>
-          <p class="lead">
-            <span lang="en">{i18n.shoppingLead.en}</span>
-            <span lang="hi">{i18n.shoppingLead.hi}</span>
-          </p>
-          <div class="shop-grid">
-            {shopping.map((s) => (
-              <div class="shop-card">
-                <h3>
-                  <span lang="en">{s.category.en}</span>
-                  <span lang="hi">{s.category.hi}</span>
-                </h3>
-                <ul lang="en">
-                  {s.items.en.map((it) => <li>{it}</li>)}
-                </ul>
-                <ul lang="hi">
-                  {s.items.hi.map((it) => <li>{it}</li>)}
-                </ul>
-              </div>
+          <div class="rohit-greeting">
+            <p class="overline">रोहित</p>
+            <h2>इस हफ़्ते का शाम का खाना</h2>
+            <p class="lede">
+              7 डिनर — सोमवार से रविवार तक। आज वाला ऊपर खुला हुआ मिलेगा।
+              प्याज़-लहसुन बिल्कुल नहीं — हींग और अदरक इस्तेमाल करें।
+            </p>
+          </div>
+
+          <div class="dinners">
+            {dinners.map((d) => (
+              <details class="dinner-card" data-day={d.day}>
+                <summary>
+                  <p class="overline">{d.dayHi}</p>
+                  <h3 class="dinner-name">{d.name.hi}</h3>
+                  <p class="dinner-time">{d.time.hi}</p>
+                  <span class="expand-hint" aria-hidden="true">
+                    <span class="hint-closed">रेसिपी देखें</span>
+                    <span class="hint-open">छुपाएँ</span>
+                    <svg class="chevron" width="12" height="12" viewBox="0 0 12 12" fill="none">
+                      <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </span>
+                </summary>
+                <div class="dinner-body">
+                  <p class="overline">सामग्री</p>
+                  <ul>
+                    {d.ingredients.hi.map((ing) => <li>{ing}</li>)}
+                  </ul>
+                  <p class="overline">बनाने का तरीका</p>
+                  <p class="method">{d.method.hi}</p>
+                  {d.note && (
+                    <div class="note-inline">{d.note.hi}</div>
+                  )}
+                </div>
+              </details>
             ))}
+          </div>
+
+          <div class="rohit-outro">
+            <p>धन्यवाद रोहित। खाना अच्छा बनाइए, सुधीर का पेट अभी नाज़ुक है।</p>
           </div>
         </div>
       </section>
-
-      <section class="tips-section">
-        <div class="container">
-          <h2>
-            <span>03</span>
-            <span lang="en">{i18n.sections.prep.en}</span>
-            <span lang="hi">{i18n.sections.prep.hi}</span>
-          </h2>
-          <ul class="tips" lang="en">
-            {prepTips.en.map((t) => <li><strong>{t.bold}</strong>{t.rest}</li>)}
-          </ul>
-          <ul class="tips" lang="hi">
-            {prepTips.hi.map((t) => <li><strong>{t.bold}</strong>{t.rest}</li>)}
-          </ul>
-
-          <h2 class="sub-h2">
-            <span>04</span>
-            <span lang="en">{i18n.sections.swaps.en}</span>
-            <span lang="hi">{i18n.sections.swaps.hi}</span>
-          </h2>
-          <ul class="tips" lang="en">
-            {swaps.en.map((t) => <li><strong>{t.bold}</strong>{t.rest}</li>)}
-          </ul>
-          <ul class="tips" lang="hi">
-            {swaps.hi.map((t) => <li><strong>{t.bold}</strong>{t.rest}</li>)}
-          </ul>
-        </div>
-      </section>
-
-      <footer class="page-footer">
-        <div class="container">
-          <p>
-            <span lang="en">{i18n.footer.en}</span>
-            <span lang="hi">{i18n.footer.hi}</span>
-          </p>
-          <p class="footer-meta">
-            <a href="/">
-              <span lang="en">{i18n.backLink.en}</span>
-              <span lang="hi">{i18n.backLink.hi}</span>
-            </a>
-          </p>
-        </div>
-      </footer>
     </main>
+
+    <footer class="page-footer">
+      <div class="container">
+        <p>Private page. Not indexed. Direct link only.</p>
+        <p class="footer-back"><a href="/">← sudhirjain.com</a></p>
+      </div>
+    </footer>
   </div>
 </Layout>
 
+<style is:global>
+  @import url('https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400&display=swap');
+
+  /* Override the portfolio's dark body background just for this page. */
+  body {
+    background: #FAF7F2 !important;
+    color: #1C1B1A !important;
+  }
+</style>
+
 <style>
-  .page-hero {
-    padding: 4rem 0 2.5rem;
-    background: radial-gradient(900px 400px at 80% -10%, var(--accent-soft), transparent 70%);
-  }
-  .hero-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 1rem;
-    flex-wrap: wrap;
-    margin-bottom: 0.4rem;
-  }
-  .page-hero h1 {
-    font-size: clamp(2rem, 5vw, 3rem);
-    line-height: 1.05;
-    letter-spacing: -0.02em;
-    margin: 0.4rem 0 0.9rem;
-  }
-  .page-hero .tagline {
-    color: var(--muted);
-    font-size: 1.05rem;
-    max-width: 42rem;
-    margin-bottom: 1.5rem;
+  .mp {
+    /* Aroha design system tokens */
+    --paper: #FAF7F2;
+    --surface: #FFFDFB;
+    --ink: #1C1B1A;
+    --ink-muted: #6B6560;
+    --accent: #E8A87C;
+    --accent-deep: #A85A30;
+    --accent-wash: #F5E4D6;
+    --hairline: #EAE4DB;
+
+    font-family: 'Hanken Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    color: var(--ink);
+    background: var(--paper);
+    min-height: 100vh;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
   }
 
-  .lang-toggle {
-    display: inline-flex;
-    border: 1px solid var(--border);
-    border-radius: 999px;
-    overflow: hidden;
-    background: var(--surface);
+  .mp .container {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
   }
-  .lang-toggle button {
+
+  /* ───── Typography ───── */
+  .mp h1, .mp h2, .mp h3 {
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    margin: 0;
+  }
+  .mp h1 { font-size: clamp(2rem, 5vw, 3rem); line-height: 1.1; letter-spacing: -0.02em; }
+  .mp h2 { font-size: 1.5rem; line-height: 1.25; }
+  .mp h3 { font-size: 1.2rem; line-height: 1.3; }
+
+  .mp .overline {
+    font-family: 'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    margin: 0;
+  }
+
+  .mp .lede {
+    font-size: 1.05rem;
+    line-height: 1.6;
+    color: var(--ink-muted);
+    max-width: 40rem;
+    margin: 0;
+  }
+
+  .mp p { margin: 0; }
+  .mp a { color: var(--accent-deep); text-decoration: none; border-bottom: 1px solid var(--hairline); }
+  .mp a:hover { border-bottom-color: var(--accent-deep); }
+
+  /* ───── Hero ───── */
+  .hero {
+    padding: 4rem 0 2.5rem;
+  }
+  .hero h1 { margin: 0.7rem 0 1.2rem; }
+  .hero .lede { margin-bottom: 2.5rem; }
+
+  /* ───── Tabs ───── */
+  .tabs {
+    display: flex;
+    gap: 0.5rem;
     background: transparent;
-    color: var(--muted);
+    border: 1px solid var(--hairline);
+    border-radius: 14px;
+    padding: 0.4rem;
+    max-width: 100%;
+  }
+  .tabs button {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.15rem;
+    background: transparent;
+    color: var(--ink-muted);
     border: 0;
-    padding: 0.35rem 0.95rem;
-    font-size: 0.82rem;
+    padding: 0.75rem 1rem;
     font-family: inherit;
+    text-align: left;
     cursor: pointer;
-    letter-spacing: 0.04em;
+    border-radius: 10px;
     transition: background 0.15s, color 0.15s;
   }
-  .lang-toggle button:hover { color: var(--text); }
-  .lang-toggle button.active {
-    background: var(--accent);
-    color: #0b0d12;
-    font-weight: 700;
+  .tabs button:hover { color: var(--ink); }
+  .tabs button.active {
+    background: var(--accent-wash);
+    color: var(--ink);
+  }
+  .tabs .tab-label { font-size: 1rem; font-weight: 500; letter-spacing: -0.005em; }
+  .tabs .tab-sub {
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+  }
+  .tabs button.active .tab-sub { color: var(--accent-deep); }
+
+  /* ───── View switch ───── */
+  .mp[data-view="sudhir"] .rohit-view { display: none; }
+  .mp[data-view="rohit"] .sudhir-view { display: none; }
+
+  /* ───── Section spacing ───── */
+  .view { padding: 2rem 0 3rem; }
+  .section-heading {
+    margin: 3rem 0 1.2rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--hairline);
   }
 
-  .brief-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
-  .tag-pill {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    color: var(--text);
-    font-size: 0.78rem;
-    padding: 0.3rem 0.75rem;
-    border-radius: 999px;
-  }
+  /* ───── Day card (Sudhir view) ───── */
+  .days { display: flex; flex-direction: column; gap: 1rem; }
 
-  .sub-h2 { margin-top: 2.5rem; }
-
-  .meals-section, .shopping-section, .tips-section { padding: 3rem 0; }
-
-  .meal-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1.4rem;
-  }
-
-  .meal-card {
+  .day-card {
     position: relative;
     background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    transition: border-color 0.18s, transform 0.18s, box-shadow 0.18s;
+    border: 1px solid var(--hairline);
+    border-radius: 14px;
+    transition: border-color 0.18s, box-shadow 0.18s;
   }
-  .meal-card:hover { border-color: var(--accent); transform: translateY(-2px); }
-
-  .meal-card > summary {
+  .day-card:hover { border-color: var(--accent-deep); }
+  .day-card > summary {
     list-style: none;
     cursor: pointer;
-    padding: 1.4rem;
-    border-radius: var(--radius);
+    padding: 1.5rem 1.6rem;
+    border-radius: 14px;
     -webkit-tap-highlight-color: transparent;
+    position: relative;
   }
-  .meal-card > summary::-webkit-details-marker { display: none; }
-  .meal-card > summary::marker { display: none; }
-  .meal-card > summary:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
+  .day-card > summary::-webkit-details-marker { display: none; }
+  .day-card > summary::marker { display: none; }
+
+  .day-context { margin-bottom: 0.4rem; }
+  .day-heading { font-size: 1.25rem; }
+  .day-meta {
+    margin-top: 0.5rem;
+    color: var(--ink-muted);
+    font-size: 0.92rem;
   }
 
   .expand-hint {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.6rem;
     display: inline-flex;
     align-items: center;
-    gap: 0.4rem;
-    margin-top: 0.85rem;
-    color: var(--accent);
-    font-size: 0.72rem;
-    font-weight: 600;
-    letter-spacing: 0.08em;
+    gap: 0.35rem;
+    color: var(--accent-deep);
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
     user-select: none;
   }
-  .expand-hint .chevron {
-    transition: transform 0.2s ease;
-  }
-  .meal-card[open] .expand-hint .chevron { transform: rotate(180deg); }
-  .meal-card .hint-open { display: none; }
-  .meal-card[open] .hint-closed { display: none; }
-  .meal-card[open] .hint-open { display: inline; }
+  .expand-hint .chevron { transition: transform 0.2s ease; }
+  details[open] > summary .expand-hint .chevron { transform: rotate(180deg); }
+  details > summary .hint-open { display: none; }
+  details[open] > summary .hint-closed { display: none; }
+  details[open] > summary .hint-open { display: inline; }
 
-  .meal-card.is-today {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 1px var(--accent), 0 10px 30px -10px var(--accent-soft);
+  .day-body {
+    padding: 0 1.6rem 1.5rem;
+    border-top: 1px solid var(--hairline);
+    padding-top: 1.2rem;
   }
-  .mp-root[data-lang="en"] .meal-card.is-today::before { content: 'Tonight'; }
-  .mp-root[data-lang="hi"] .meal-card.is-today::before { content: 'आज रात'; }
-  .meal-card.is-today::before {
-    position: absolute;
-    top: -10px;
-    left: 1rem;
-    background: var(--accent);
-    color: #0b0d12;
+
+  /* ───── Meal (inside day) ───── */
+  .meal {
+    padding: 1rem 0;
+    border-bottom: 1px dashed var(--hairline);
+  }
+  .meal:last-child { border-bottom: none; padding-bottom: 0; }
+  .meal:first-child { padding-top: 0; }
+
+  .meal-time { margin-bottom: 0.4rem; }
+  .meal-dish { font-size: 1.05rem; margin: 0.2rem 0 0.5rem; font-weight: 500; }
+  .meal-detail {
+    color: var(--ink-muted);
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+
+  /* ───── Recipe (nested inside meal, dinner only) ───── */
+  .recipe {
+    margin-top: 0.9rem;
+    border: 1px solid var(--hairline);
+    border-radius: 10px;
+    background: var(--paper);
+  }
+  .recipe > summary {
+    list-style: none;
+    cursor: pointer;
+    padding: 0.65rem 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
     font-size: 0.68rem;
-    font-weight: 700;
-    padding: 0.22rem 0.65rem;
-    border-radius: 999px;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
-    z-index: 1;
+    color: var(--accent-deep);
+    border-radius: 10px;
+    -webkit-tap-highlight-color: transparent;
   }
+  .recipe > summary::-webkit-details-marker,
+  .recipe > summary::marker { display: none; }
+  .recipe > summary .chevron { margin-left: auto; transition: transform 0.2s ease; }
+  .recipe[open] > summary .chevron { transform: rotate(180deg); }
+  .recipe[open] > summary .hint-closed { display: none; }
+  .recipe > summary .hint-open { display: none; }
+  .recipe[open] > summary .hint-open { display: inline; }
 
-  .meal-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 0.5rem;
+  .recipe-body {
+    padding: 0.2rem 0.9rem 1rem;
   }
-  .meal-day { display: flex; align-items: baseline; gap: 0.6rem; }
-  .day-num {
-    color: var(--accent);
-    font-size: 0.85rem;
-    font-weight: 700;
-    font-variant-numeric: tabular-nums;
-  }
-  .day-name { color: var(--muted); font-size: 0.85rem; letter-spacing: 0.08em; text-transform: uppercase; }
-  .cuisine-badge {
-    color: var(--c);
-    border: 1px solid var(--c);
-    background: color-mix(in srgb, var(--c) 10%, transparent);
-    font-size: 0.72rem;
-    padding: 0.18rem 0.6rem;
-    border-radius: 999px;
-    letter-spacing: 0.04em;
-  }
-
-  .meal-card h3 {
-    font-size: 1.05rem;
-    margin: 0.3rem 0 0.4rem;
-    line-height: 1.3;
-  }
-  .macros {
-    color: var(--muted);
-    font-size: 0.82rem;
-    margin-bottom: 0.9rem;
-    display: flex;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-    align-items: center;
-  }
-  .macros .dot { opacity: 0.5; }
-
-  .meal-body {
-    padding: 0 1.4rem 1.4rem;
-  }
-  .meal-body h4 {
-    font-size: 0.78rem;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--accent);
-    margin: 0.4rem 0 0.45rem;
-    font-weight: 600;
-  }
-  .meal-body h4:first-child { margin-top: 0; }
-  .meal-body ul {
+  .recipe-body .overline { margin: 0.9rem 0 0.4rem; }
+  .recipe-body ul {
     margin: 0 0 0 1.1rem;
-    color: var(--muted);
-    font-size: 0.9rem;
-  }
-  .meal-body li { margin-bottom: 0.2rem; }
-  .meal-body p {
-    color: var(--muted);
+    padding: 0;
+    color: var(--ink-muted);
     font-size: 0.92rem;
     line-height: 1.55;
   }
-  .meal-note {
-    margin-top: 0.9rem;
-    padding: 0.7rem 0.85rem;
-    background: var(--bg-soft);
-    border-left: 3px solid var(--accent);
-    border-radius: 6px;
-    font-size: 0.85rem;
-    color: var(--muted);
+  .recipe-body li { padding: 0.1rem 0; }
+  .recipe-body .method {
+    color: var(--ink-muted);
+    font-size: 0.92rem;
+    line-height: 1.65;
   }
 
-  .shop-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1.2rem;
-    margin-top: 1.2rem;
-  }
-  .shop-card {
-    background: var(--bg-soft);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
+  /* ───── Notes (nutritionist) ───── */
+  .notes { display: flex; flex-direction: column; gap: 0.8rem; }
+  .note-card {
     padding: 1.2rem 1.4rem;
-  }
-  .shop-card h3 {
-    font-size: 0.95rem;
-    margin-bottom: 0.6rem;
-    color: var(--accent);
-  }
-  .shop-card ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-  .shop-card li {
-    color: var(--muted);
-    font-size: 0.9rem;
-    padding: 0.25rem 0;
-    border-bottom: 1px dashed var(--border);
-  }
-  .shop-card li:last-child { border-bottom: none; }
-
-  .lead { color: var(--muted); margin-bottom: 0.5rem; }
-
-  .tips {
-    list-style: none;
-    padding: 0;
-    margin: 1rem 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.7rem;
-  }
-  .tips li {
+    border: 1px solid var(--hairline);
+    border-radius: 12px;
     background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 0.85rem 1.1rem;
-    color: var(--muted);
-    font-size: 0.93rem;
-    line-height: 1.55;
   }
-  .tips li strong { color: var(--text); }
+  .note-card h3 { font-size: 1rem; margin-bottom: 0.35rem; font-weight: 500; }
+  .note-card p { color: var(--ink-muted); font-size: 0.95rem; line-height: 1.6; }
 
-  .page-footer {
-    padding: 3rem 0 2.5rem;
-    border-top: 1px solid var(--border);
-    color: var(--muted);
-    font-size: 0.85rem;
-    text-align: center;
+  /* ───── Rohit view ───── */
+  .rohit-view { line-height: 1.75; }
+  .rohit-greeting {
+    padding: 0.5rem 0 2.5rem;
+    border-bottom: 1px solid var(--hairline);
+    margin-bottom: 2rem;
   }
-  .footer-meta { margin-top: 0.6rem; }
+  .rohit-greeting h2 { margin: 0.6rem 0 1rem; font-size: 1.8rem; }
+  .rohit-greeting .lede { max-width: none; }
 
-  /* Language visibility — toggled via [data-lang] on .mp-root */
-  .mp-root[data-lang="en"] [lang="hi"] { display: none !important; }
-  .mp-root[data-lang="hi"] [lang="en"] { display: none !important; }
+  .dinners { display: flex; flex-direction: column; gap: 0.9rem; }
 
-  /* Slightly larger line-height for Devanagari readability */
-  .mp-root[data-lang="hi"] .meal-body p,
-  .mp-root[data-lang="hi"] .meal-body li,
-  .mp-root[data-lang="hi"] .tips li,
-  .mp-root[data-lang="hi"] .shop-card li,
-  .mp-root[data-lang="hi"] .tagline {
+  .dinner-card {
+    position: relative;
+    background: var(--surface);
+    border: 1px solid var(--hairline);
+    border-radius: 14px;
+    transition: border-color 0.18s, box-shadow 0.18s;
+  }
+  .dinner-card:hover { border-color: var(--accent-deep); }
+  .dinner-card > summary {
+    list-style: none;
+    cursor: pointer;
+    padding: 1.4rem 1.5rem;
+    border-radius: 14px;
+    -webkit-tap-highlight-color: transparent;
+    position: relative;
+  }
+  .dinner-card > summary::-webkit-details-marker,
+  .dinner-card > summary::marker { display: none; }
+
+  .dinner-name { font-size: 1.25rem; margin: 0.35rem 0 0.3rem; font-weight: 500; }
+  .dinner-time { color: var(--ink-muted); font-size: 0.9rem; }
+
+  .dinner-body {
+    padding: 0.5rem 1.5rem 1.5rem;
+    border-top: 1px solid var(--hairline);
+    padding-top: 1.2rem;
+  }
+  .dinner-body .overline { margin: 1rem 0 0.5rem; }
+  .dinner-body .overline:first-child { margin-top: 0; }
+  .dinner-body ul {
+    margin: 0 0 0 1.2rem;
+    padding: 0;
+    color: var(--ink-muted);
+    font-size: 0.98rem;
     line-height: 1.75;
   }
+  .dinner-body li { padding: 0.15rem 0; }
+  .dinner-body .method {
+    color: var(--ink-muted);
+    font-size: 0.98rem;
+    line-height: 1.75;
+  }
+  .note-inline {
+    margin-top: 1.1rem;
+    padding: 0.9rem 1.1rem;
+    background: var(--accent-wash);
+    border-radius: 10px;
+    font-size: 0.9rem;
+    color: var(--ink);
+    line-height: 1.65;
+  }
 
+  .rohit-outro {
+    margin-top: 2.5rem;
+    padding: 1.5rem;
+    text-align: center;
+    color: var(--ink-muted);
+    font-size: 0.95rem;
+  }
+
+  /* ───── Today ───── */
+  .day-card.is-today, .dinner-card.is-today {
+    border-color: var(--accent-deep);
+    box-shadow: 0 0 0 1px var(--accent-deep), 0 12px 30px -14px var(--accent-wash);
+  }
+  .mp[data-view="sudhir"] .day-card.is-today::before,
+  .mp[data-view="rohit"] .dinner-card.is-today::before {
+    position: absolute;
+    top: -10px;
+    left: 1.2rem;
+    padding: 0.22rem 0.7rem;
+    background: var(--accent);
+    color: var(--ink);
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 0.62rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    border-radius: 999px;
+    z-index: 2;
+  }
+  .mp[data-view="sudhir"] .day-card.is-today::before { content: 'Today'; }
+  .mp[data-view="rohit"] .dinner-card.is-today::before { content: 'आज'; }
+
+  /* ───── Footer ───── */
+  .page-footer {
+    padding: 4rem 0 3rem;
+    text-align: center;
+    color: var(--ink-muted);
+    font-size: 0.9rem;
+    border-top: 1px solid var(--hairline);
+  }
+  .footer-back { margin-top: 0.5rem; }
+
+  /* ───── Print ───── */
   @media print {
-    .lang-toggle, .expand-hint { display: none !important; }
-    .page-hero { background: none; padding: 1rem 0; }
-    details.meal-card > .meal-body { display: block !important; }
-    .meal-card, .shop-card, .tips li {
+    .tabs, .expand-hint, .rohit-outro { display: none !important; }
+    .mp[data-view="sudhir"] .rohit-view { display: none; }
+    .mp[data-view="rohit"] .sudhir-view { display: none; }
+    details > .day-body, details > .dinner-body, details > .recipe-body { display: block !important; }
+    .day-card, .dinner-card, .note-card, .recipe {
       break-inside: avoid;
-      background: white !important;
-      color: black !important;
-      border-color: #ccc !important;
     }
   }
 
-  @media (max-width: 760px) {
-    .meal-grid { grid-template-columns: 1fr; }
-    .shop-grid { grid-template-columns: 1fr; }
-    .meal-head { flex-wrap: wrap; gap: 0.5rem; }
-    .hero-top { align-items: flex-start; }
+  /* ───── Responsive ───── */
+  @media (max-width: 640px) {
+    .hero { padding: 3rem 0 2rem; }
+    .tabs button { padding: 0.65rem 0.8rem; }
+    .day-card > summary, .dinner-card > summary { padding: 1.2rem 1.2rem; }
+    .expand-hint { top: 1.2rem; right: 1.2rem; }
+    .day-body { padding: 0 1.2rem 1.2rem; padding-top: 1rem; }
+    .dinner-body { padding: 0.5rem 1.2rem 1.2rem; padding-top: 1rem; }
   }
 </style>
 
 <script is:inline>
   (function () {
-    var root = document.querySelector('.mp-root');
+    var root = document.querySelector('.mp');
     if (!root) return;
 
-    // 1. Language toggle (persisted in localStorage)
-    var STORAGE_KEY = 'mealPlanLang';
-    var setLang = function (lang) {
-      if (lang !== 'en' && lang !== 'hi') lang = 'en';
-      root.setAttribute('data-lang', lang);
-      var buttons = root.querySelectorAll('[data-lang-set]');
+    // 1. Tab switch (Sudhir / Rohit), persisted
+    var KEY = 'mealPlanView';
+    var setView = function (view) {
+      if (view !== 'sudhir' && view !== 'rohit') view = 'sudhir';
+      root.setAttribute('data-view', view);
+      var buttons = root.querySelectorAll('[data-view-set]');
       for (var i = 0; i < buttons.length; i++) {
         var b = buttons[i];
-        var match = b.getAttribute('data-lang-set') === lang;
+        var match = b.getAttribute('data-view-set') === view;
         b.classList.toggle('active', match);
         b.setAttribute('aria-pressed', match ? 'true' : 'false');
       }
-      try { localStorage.setItem(STORAGE_KEY, lang); } catch (e) {}
+      try { localStorage.setItem(KEY, view); } catch (e) {}
     };
-    var saved = 'en';
-    try { saved = localStorage.getItem(STORAGE_KEY) || 'en'; } catch (e) {}
-    setLang(saved);
-    var buttons = root.querySelectorAll('[data-lang-set]');
+    var saved = 'sudhir';
+    try { saved = localStorage.getItem(KEY) || 'sudhir'; } catch (e) {}
+    setView(saved);
+    var buttons = root.querySelectorAll('[data-view-set]');
     for (var i = 0; i < buttons.length; i++) {
       (function (b) {
-        b.addEventListener('click', function () { setLang(b.getAttribute('data-lang-set')); });
+        b.addEventListener('click', function () { setView(b.getAttribute('data-view-set')); });
       })(buttons[i]);
     }
 
-    // 2. Highlight today's card (matches by English day name from data-day)
-    //    Auto-expand it so the cook lands on tonight's recipe.
+    // 2. Today: highlight + auto-expand in BOTH views
     var today = new Date().toLocaleDateString('en-US', { weekday: 'long' });
-    var card = root.querySelector('.meal-card[data-day="' + today + '"]');
-    if (card) {
-      card.classList.add('is-today');
-      card.setAttribute('open', '');
+    var todayCards = root.querySelectorAll('[data-day="' + today + '"]');
+    for (var j = 0; j < todayCards.length; j++) {
+      todayCards[j].classList.add('is-today');
+      todayCards[j].setAttribute('open', '');
     }
 
-    // 3. Print: expand every card so the full plan prints, then restore.
+    // 3. Print: expand every card, restore after
     window.addEventListener('beforeprint', function () {
-      var cards = root.querySelectorAll('details.meal-card');
+      var cards = root.querySelectorAll('details');
       for (var i = 0; i < cards.length; i++) {
         cards[i].dataset.printState = cards[i].open ? 'open' : 'closed';
         cards[i].open = true;
       }
     });
     window.addEventListener('afterprint', function () {
-      var cards = root.querySelectorAll('details.meal-card');
+      var cards = root.querySelectorAll('details');
       for (var i = 0; i < cards.length; i++) {
         if (cards[i].dataset.printState === 'closed') cards[i].open = false;
         delete cards[i].dataset.printState;
