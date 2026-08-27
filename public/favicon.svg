@@ -1,5 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" rx="12" fill="#6ea8fe"/>
-  <text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle"
-        font-family="sans-serif" font-size="34" font-weight="700" fill="#0f1115">S</text>
+  <rect width="64" height="64" rx="14" fill="#e8a87c"/>
+  <text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle"
+        font-family="system-ui, -apple-system, 'Segoe UI', sans-serif"
+        font-size="34" font-weight="500" fill="#1c1b1a">S</text>
 </svg>
