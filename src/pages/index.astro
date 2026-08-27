@@ -46,7 +46,12 @@ const timeline = [
         <p class="tagline">{profile.tagline}</p>
         <div class="socials">
           {profile.socials.filter((s) => s.label !== 'GitHub').map((s) => (
-            <a class="btn" href={s.url} target="_blank" rel="noopener">{s.label}</a>
+            <a
+              class={s.label === 'LinkedIn' ? 'btn btn--primary' : 'btn'}
+              href={s.url}
+              target="_blank"
+              rel="noopener"
+            >{s.label}</a>
           ))}
         </div>
       </div>
@@ -58,7 +63,10 @@ const timeline = [
 
   <section id="about">
     <div class="container">
-      <h2><span>01</span> About</h2>
+      <div class="section-head">
+        <p class="eyebrow">01</p>
+        <h2>About</h2>
+      </div>
       <div class="prose">
         {about.trim().split('\n\n').map((p) => <p>{p.replace(/\n/g, ' ')}</p>)}
       </div>
@@ -70,7 +78,10 @@ const timeline = [
 
   <section id="experience">
     <div class="container">
-      <h2><span>02</span> Experience &amp; Education</h2>
+      <div class="section-head">
+        <p class="eyebrow">02</p>
+        <h2>Experience &amp; Education</h2>
+      </div>
       <div class="timeline">
         {timeline.map((item) => (
           <div class="tl-item">
@@ -92,7 +103,10 @@ const timeline = [
 
   <section id="projects">
     <div class="container">
-      <h2><span>03</span> Selected Projects</h2>
+      <div class="section-head">
+        <p class="eyebrow">03</p>
+        <h2>Selected Projects</h2>
+      </div>
       <div class="grid">
         {projects.map((p) => (
           <article class="card">
@@ -117,7 +131,10 @@ const timeline = [
 
   <section id="certifications">
     <div class="container">
-      <h2><span>04</span> Certifications &amp; Learning</h2>
+      <div class="section-head">
+        <p class="eyebrow">04</p>
+        <h2>Certifications &amp; Learning</h2>
+      </div>
       <div class="skill-tags">
         {certifications.map((c) => <span class="tag">{c}</span>)}
       </div>
@@ -126,14 +143,22 @@ const timeline = [
 
   <section id="contact">
     <div class="container contact">
-      <h2><span>05</span> Get in touch</h2>
+      <div class="section-head">
+        <p class="eyebrow">05</p>
+        <h2>Get in touch</h2>
+      </div>
       <p>
         Always happy to talk product, AI, or building things from zero.
         Reach me at <a href={`mailto:${profile.email}`}>{profile.email}</a>.
       </p>
       <div class="socials">
         {profile.socials.map((s) => (
-          <a class="btn" href={s.url} target="_blank" rel="noopener">{s.label}</a>
+          <a
+            class={s.label === 'Email' ? 'btn btn--primary' : 'btn'}
+            href={s.url}
+            target="_blank"
+            rel="noopener"
+          >{s.label}</a>
         ))}
       </div>
     </div>
